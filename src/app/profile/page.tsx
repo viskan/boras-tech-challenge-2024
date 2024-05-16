@@ -2,6 +2,7 @@ import { getServerAuthSession } from "~/server/auth";
 import SignOut from "./_components/SignOut";
 import Profile from "./_components/Profile";
 import SignIn from "./_components/SignIn";
+import MaxWidthWrapper from "../_components/max-width-wrapper";
 
 /**
  * The page for handling the profile. If the user is not logged in, the login form will be shown.
@@ -9,7 +10,7 @@ import SignIn from "./_components/SignIn";
 const ProfilePage = async () => {
     const session = await getServerAuthSession();
     return (
-        <main>
+        <MaxWidthWrapper tag="main">
             {session !== null && (
                 <>
                     <Profile session={session}/>
@@ -20,7 +21,7 @@ const ProfilePage = async () => {
             {session === null && (
                 <SignIn/>
             )}
-        </main>
+        </MaxWidthWrapper>
     );
 };
 

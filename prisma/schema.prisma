@@ -74,7 +74,7 @@ model User {
     organizations   Organization[] 
     sponsorships    Sponsorship[]
     events          Event[] @relation("eventUsers")
-    adminEvents     Event[] @relation("adminUser")
+    createdEvents   Event[] @relation("creator")
     likes           Like[]
 }
 
@@ -102,11 +102,11 @@ model Event {
     name            String
     eventType       EventType
     sponsorships    Sponsorship[]
-    lat             Float
-    long            Float
+    latitude        Float
+    longitude       Float
     users           User[] @relation("eventUsers")
-    adminUserId     String
-    adminUser       User    @relation("adminUser", fields: [adminUserId], references: [id])
+    creatorId       String
+    creator         User    @relation("creator", fields: [creatorId], references: [id])
     comments        Comment[]
     likes           Like[]
 }

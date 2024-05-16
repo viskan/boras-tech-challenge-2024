@@ -1,0 +1,109 @@
+---
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: boras-tech-challenge-2024
+
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  namespace: boras-tech-challenge-2024
+  name: application
+  labels:
+    app: boras-tech-challenge-2024
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: boras-tech-challenge-2024
+  template:
+    metadata:
+      labels:
+        app: boras-tech-challenge-2024
+    containers:
+      - name: application
+        image: boras-tech-challenge-viskan:latest
+        ports:
+          - name: application
+            image: test
+            imagePullPolicy: Always
+            ports:
+              - name: http
+                containerPort: 3000
+                protocol: TCP
+        env:
+          - name: DATABASE_URL
+            value: postgresql://<workspace ID>:<api key>@eu-west-1.sql.xata.sh:5432/boras-tech-challenge-2024:main?sslmode=require
+          - name: NEXTAUTH_SECRET
+            value: ...
+          - name: NEXTAUTH_URL
+            value: http://localhost:3000
+          - name: GOOGLE_CLIENT_ID
+            value: ...
+          - name: GOOGLE_CLIENT_SECRET
+            value: ...
+          - name: FACEBOOK_CLIENT_ID
+            value: ...
+          - name: FACEBOOK_CLIENT_SECRET
+            value: ...
+          - name: MAPBOX_ACCESS_TOKEN
+            value: ...
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  namespace: boras-tech-challenge-2024
+  name: application
+spec:
+  selector:
+    app: boras-tech-challenge-2024
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+
+---
+kind: Certificate
+apiVersion: cert-manager.io/v1
+metadata:
+  namespace: boras-tech-challenge-2024
+  name: application
+  labels:
+    app: boras-tech-challenge-2024
+spec:
+  secretName: application-certificate
+  commonName: levelup-borås.viskan.com
+  dnsNames:
+    - levelup-borås.viskan.com
+  issuerRef:
+    name: letsencrypt
+    kind: ClusterIssuer
+    group: cert-manager.io
+
+---
+kind: Ingress
+apiVersion: networking.k8s.io/v1
+metadata:
+  namespace: boras-tech-challenge-2024
+  name: application
+  labels:
+    app: boras-tech-challenge-2024
+spec:
+  ingressClassName: external
+  rules:
+    - host: levelup-borås.viskan.com
+      http:
+        paths:
+          - pathType: Prefix
+            path: /
+            backend:
+              service:
+                name: application
+                port:
+                  number: 3000
+  tls:
+    - secretName: application-certificate
+      hosts:
+        - levelup-borås.viskan.com

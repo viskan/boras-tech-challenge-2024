@@ -32,27 +32,27 @@ export const organizationRouter = createTRPCRouter({
       });
     }),
 
-  addUser: protectedProcedure
-    .input(
-      z.object({
-        organizationId: z.number().min(1),
-        userId: z.number().min(1),
-      }),
-    )
-    .mutation(async ({ ctx, input }) => {
-      return await ctx.db.organization.update({
-        where: {
-          id: input.organizationId,
-        },
-        data: {
-          users: {
-            connect: {
-              id: input.userId,
-            },
-          },
-        },
-      });
-    }),
+  // addUser: protectedProcedure
+  //   .input(
+  //     z.object({
+  //       organizationId: z.number().min(1),
+  //       userId: z.number().min(1),
+  //     }),
+  //   )
+  //   .mutation(async ({ ctx, input }) => {
+  //     return await ctx.db.organization.update({
+  //       where: {
+  //         id: input.organizationId,
+  //       },
+  //       data: {
+  //         users: {
+  //           connect: {
+  //             id: input.userId,
+  //           },
+  //         },
+  //       },
+  //     });
+  //   }),
 });
 
 

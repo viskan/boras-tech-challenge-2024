@@ -18,10 +18,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${GeistSans.variable} bg-accent`}>
-      <body>
+    <html lang="en" className={`${GeistSans.variable}`}>
+      <body className="bg-secondary">
         <Header/>
-        <div className="mt-20">
+        <div className="mt-16">
         <TRPCReactProvider>{children}</TRPCReactProvider>
         <div className="absolute bottom-5 left-1/2 -translate-x-1/2 transform">
           <MenuBar />

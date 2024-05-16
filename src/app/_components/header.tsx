@@ -1,6 +1,6 @@
 const Header = () => {
   return (
-    <header className="fixed top-0 z-10 grid h-16 w-full grid-cols-3 place-content-center gap-4 overflow-visible bg-secondary border-b border-red-300">
+    <header className="fixed top-0 z-10 grid h-16 w-full grid-cols-3 place-content-center gap-4 overflow-visible bg-secondary shadow">
       <div className="flex">
         <svg
           width="128"
