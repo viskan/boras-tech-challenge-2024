@@ -2,22 +2,7 @@
 
 import {  } from "react";
 import Link from "next/link";
-
-type Sponsor  = {
-    userId?: number,
-    organizationId?: number,
-    name: string,
-  };
-
-type Event = {
-    eventId:number,
-    name: string,
-    createdBy: number,
-    likes: number,
-    eventType: string,
-    sponsors?: Sponsor[]
-  };
-  
+import Event from './Event'
 
 const EventListItem = (event: Event) => {
     console.log(event);

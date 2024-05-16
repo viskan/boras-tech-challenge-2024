@@ -83,11 +83,11 @@ const Header2 = () => {
                 <defs>
                 <radialGradient id="paint0_radial_60_149" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(43.1459 39.5154) scale(48.4854 48.4854)">
                 <stop/>
-                <stop offset="1" stop-color="white"/>
+                <stop offset="1" stopColor="white"/>
                 </radialGradient>
                 <radialGradient id="paint1_radial_60_149" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(38.8037 39.0329) scale(30.866 30.866)">
                 <stop/>
-                <stop offset="1" stop-color="white"/>
+                <stop offset="1" stopColor="white"/>
                 </radialGradient>
                 </defs>
             </svg>

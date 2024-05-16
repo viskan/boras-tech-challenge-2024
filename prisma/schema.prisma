@@ -14,32 +14,24 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Post {
-    id          String      @id @default(cuid())
-    name        String
+model Comment {
+    id          Int @id @default(autoincrement())
     comment     String
     likes       Like[]
-
-    createdAt   DateTime @default(now())
-    updatedAt   DateTime @updatedAt
-
-    eventId     String
-    event       Event[]
-
-    createdBy   User   @relation(fields: [createdById], references: [id])
-    createdById String
-
-    @@index([name])
+    eventId     Int
+    event       Event @relation(fields: [eventId], references: [id])
+    userId      String
+    user        User  @relation(fields: [userId], references: [id])
 }
 
 model Like {
-    id          String @id @default(cuid())
+    id          Int @id @default(autoincrement())
     userId      String
-    user        User @relation(fields: [userId], references: [id], onDelete: Cascade)
-    postId      String?
-    comment     Post? @relation(fields: [postId], references: [id], onDelete: Cascade)
-    eventId     String?
-    event       Event? @relation(fields: [eventId], references: [id], onDelete: Cascade)
+    user        User @relation(fields: [userId], references: [id], onDelete: NoAction)
+    commentId   Int?
+    comment     Comment? @relation(fields: [commentId], references: [id], onDelete: NoAction)
+    eventId     Int?
+    event       Event? @relation(fields: [eventId], references: [id], onDelete: NoAction)
 }
 
 // Necessary for Next auth
@@ -66,8 +58,8 @@ model Session {
     id           String   @id @default(cuid())
     sessionToken String   @unique
     userId       String
-    expires      DateTime
     user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    expires      DateTime
 }
 
 model User {
@@ -77,41 +69,45 @@ model User {
     emailVerified   DateTime?
     image           String?
     accounts        Account[]
-    sessions        Session[]
-    posts           Post[]
+    session         Session[]
+    comments        Comment[]
     organizations   Organization[] 
     sponsorships    Sponsorship[]
-    events          Event[]
+    events          Event[] @relation("eventUsers")
+    adminEvents     Event[] @relation("adminUser")
     likes           Like[]
 }
 
 model Organization {
-    id              String  @id @default(cuid())
+    id              Int @id @default(autoincrement())
     name            String
     users           User[]
     sponsorships    Sponsorship[]
 }
 
 model Sponsorship {
-    id              String @id @default(cuid())
-    orgId           String?
+    id              Int @id @default(autoincrement())
+    orgId           Int?
     organization    Organization? @relation(fields: [orgId], references: [id], onDelete: Cascade)
     name            String
-    eventId         String
+    eventId         Int
     event           Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
-    userId          String
+    userId      String
     user            User @relation(fields: [userId], references: [id], onDelete: Cascade)
     sponsorComment  String
 }
 
 model Event {
-    id              String @id @default(cuid())
+    id              Int @id @default(autoincrement())
     name            String
     eventType       EventType
     sponsorships    Sponsorship[]
-    coordinates     Int[]
-    users           User[]
-    comments        Post[]
+    lat             Float
+    long            Float
+    users           User[] @relation("eventUsers")
+    adminUserId     String
+    adminUser       User    @relation("adminUser", fields: [adminUserId], references: [id])
+    comments        Comment[]
     likes           Like[]
 }
 
@@ -130,8 +126,6 @@ model VerificationToken {
 }
 
 model Achievement {
-    id      String  @id @default(cuid())
+    id      Int @id @default(autoincrement())
     name    String
-
-    
 }

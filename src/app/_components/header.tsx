@@ -1,10 +1,10 @@
 const Header = () => {
   return (
-    <header className="bg-background no-wrap flex flex-row w-full">
-      <div className="">
+    <header className="fixed top-0 z-10 grid h-16 w-full grid-cols-3 place-content-center gap-4 overflow-visible bg-secondary border-b border-red-300">
+      <div className="flex">
         <svg
-          width="108"
-          height="88"
+          width="128"
+          height="98"
           viewBox="0 0 108 88"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -63,7 +63,7 @@ const Header = () => {
           />
           <path
             d="M43.1461 88C69.9239 88 91.6315 66.2923 91.6315 39.5146C91.6315 12.7368 69.9239 -8.97089 43.1461 -8.97089C16.3683 -8.97089 -5.33936 12.7368 -5.33936 39.5146C-5.33936 66.2923 16.3683 88 43.1461 88Z"
-            fill="url(#paint0_radial_60_149)"
+            fill="url(#paint0_radial_71_149)"
           />
           <path
             d="M32.0483 80.809C58.2291 80.809 79.4528 59.5853 79.4528 33.4045C79.4528 7.22371 58.2291 -14 32.0483 -14C5.86751 -14 -15.3562 7.22371 -15.3562 33.4045C-15.3562 59.5853 5.86751 80.809 32.0483 80.809Z"
@@ -283,7 +283,7 @@ const Header = () => {
           />
           <path
             d="M38.8031 69.8977C55.8496 69.8977 69.6685 56.0788 69.6685 39.0323C69.6685 21.9858 55.8496 8.16687 38.8031 8.16687C21.7566 8.16687 7.93774 21.9858 7.93774 39.0323C7.93774 56.0788 21.7566 69.8977 38.8031 69.8977Z"
-            fill="url(#paint1_radial_60_149)"
+            fill="url(#paint1_radial_71_149)"
           />
           <path
             d="M32.0484 62.2461C47.9772 62.2461 60.89 49.3333 60.89 33.4045C60.89 17.4757 47.9772 4.56287 32.0484 4.56287C16.1196 4.56287 3.20679 17.4757 3.20679 33.4045C3.20679 49.3333 16.1196 62.2461 32.0484 62.2461Z"
@@ -323,7 +323,7 @@ const Header = () => {
           />
           <defs>
             <radialGradient
-              id="paint0_radial_60_149"
+              id="paint0_radial_71_149"
               cx="0"
               cy="0"
               r="1"
@@ -334,7 +334,7 @@ const Header = () => {
               <stop offset="1" stopColor="white" />
             </radialGradient>
             <radialGradient
-              id="paint1_radial_60_149"
+              id="paint1_radial_71_149"
               cx="0"
               cy="0"
               r="1"
@@ -347,7 +347,7 @@ const Header = () => {
           </defs>
         </svg>
       </div>
-      <div className="center">
+      <div className="flex items-center justify-center">
         <svg
           width="78"
           height="44"
@@ -399,10 +399,10 @@ const Header = () => {
           />
         </svg>
       </div>
-      <div className="justify-end">
+      <div className="ml-auto flex">
         <svg
-          width="92"
-          height="54"
+          width="98"
+          height="60"
           viewBox="0 0 92 54"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"

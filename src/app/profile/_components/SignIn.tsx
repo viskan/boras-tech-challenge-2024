@@ -1,12 +1,14 @@
 "use client";
 
-import {getProviders, signIn} from "next-auth/react";
-import { Button } from "~/components/ui/button";
+import {signIn} from "next-auth/react";
+import {Button} from "../../../components/ui/button";
 
+/**
+ * Renders the various buttons to login via different providers.
+ */
 export default function SignIn() {
-    getProviders().then(providers => console.log(providers));
     return (
-        <div >
+        <div>
             <div>
                 <Button onClick={() => signIn("google")}>Sign in with Google</Button>
             </div>

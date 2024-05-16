@@ -1,7 +1,9 @@
 "use client";
 
+import React from "react";
 import {type MapPin} from "lucide-react";
 import {usePathname} from "next/navigation";
+import Link from "next/link";
 
 /**
  * Properties for the `MenuItem` component.
@@ -33,9 +35,11 @@ const MenuItem = ({path, icon: Icon, ariaLabel}: MenuItemProps) => {
     const border = isSelected ? "border" : "";
     const cursor = isSelected ? "cursor-default" : "cursor-pointer";
     return (
-        <div className={`p-2 m-3 ${border} border-primary rounded-xl ${cursor}`} aria-label={ariaLabel}>
-            <Icon className={color}/>
-        </div>
+        <Link href={path}>
+            <div className={`p-2 m-3 ${border} border-primary rounded-xl ${cursor}`} aria-label={ariaLabel}>
+                <Icon className={color}/>
+            </div>
+        </Link>
     );
 };
 

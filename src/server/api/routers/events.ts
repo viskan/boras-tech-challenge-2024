@@ -1,4 +1,5 @@
 import { z } from "zod";
+import eventSchema from "~/app/events/_components/Event";
 
 
 import {
@@ -62,31 +63,28 @@ const tempData = [
    },
 ];
 export const eventRouter = createTRPCRouter({
-    getEvents: publicProcedure
-    .query(({ ctx, input }) => {
-      return ctx.db.event.findMany({
-        orderBy: { id: "desc" },
-      });;
-    }),
+  getEvents: publicProcedure.query(({ ctx }) => {
+    return ctx.db.event.findMany({
+      orderBy: { id: "desc" },
+    });
+  }),
 
-    getEvent: publicProcedure
-    .input(z.object({ id:z.number() }))
+  getEvent: publicProcedure
+    .input(z.object({ id: z.number() }))
     .query(({ input }) => {
-      return tempData.find(event => event.eventId === input.id);
+      return tempData.find((event) => event.eventId === input.id);
     }),
-
-    
 
   create: protectedProcedure
-    .input(z.object({ name: z.string().min(1) }))
+    .input(eventSchema)
     .mutation(async ({ ctx, input }) => {
-      // simulate a slow db call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      return ctx.db.post.create({
+      return ctx.db.event.create({
         data: {
           name: input.name,
-          createdBy: { connect: { id: ctx.session.user.id } },
+          lat: 1.0,
+          long: 2.0,
+          eventType: "FUN_EVENT",
+          adminUserId: ctx.session.user.id,
         },
       });
     }),
@@ -97,4 +95,13 @@ export const eventRouter = createTRPCRouter({
       where: { createdBy: { id: ctx.session.user.id } },
     });
   }),
+
+  addUser: protectedProcedure
+    .input(z.object({ userId: z.number(), eventId: z.number() }))
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.event.update({
+        where: { id: input.eventId },
+        data: { users: { connect: { id: input.userId } } },
+      });
+    }),
 });

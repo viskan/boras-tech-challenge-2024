@@ -8,7 +8,7 @@ import {
 
 
 export const organizationRouter = createTRPCRouter({
-  getById: publicProcedure.input(z.string()).query(async ({ ctx, input })=> {
+  getById: publicProcedure.input(z.string()).query(async ({ ctx })=> {
     const test = await ctx.db.organization.findMany();
     return test;
   }),
@@ -17,7 +17,6 @@ export const organizationRouter = createTRPCRouter({
     return await ctx.db.organization.findMany();
   }),
 
-  //BELOW THIS DOES NOT WORK
   create: protectedProcedure
     .input(
       z.object(
@@ -26,12 +25,32 @@ export const organizationRouter = createTRPCRouter({
       ),
     )
     .mutation(async ({ ctx, input }) => {
-      //simulate a slow db call
-      //await new Promise((resolve) => setTimeout(resolve, 1000));
       return await ctx.db.organization.create({
         data: {
             name: input.name
         }
+      });
+    }),
+
+  addUser: protectedProcedure
+    .input(
+      z.object({
+        organizationId: z.number().min(1),
+        userId: z.number().min(1),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.db.organization.update({
+        where: {
+          id: input.organizationId,
+        },
+        data: {
+          users: {
+            connect: {
+              id: input.userId,
+            },
+          },
+        },
       });
     }),
 });
