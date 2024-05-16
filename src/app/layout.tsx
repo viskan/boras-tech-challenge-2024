@@ -3,6 +3,10 @@ import "~/styles/globals.css";
 import { GeistSans } from "geist/font/sans";
 
 import { TRPCReactProvider } from "~/trpc/react";
+import MenuBar from "./menu-bar-test/_components/MenuBar";
+import Header from "./_components/header";
+import Header2 from "./_components/header2";
+import Header3 from "./_components/test";
 
 export const metadata = {
   title: "Create T3 App",
@@ -18,7 +22,11 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
       <body>
+        <Header/>
         <TRPCReactProvider>{children}</TRPCReactProvider>
+        <div className="absolute bottom-5 left-1/2 -translate-x-1/2 transform">
+          <MenuBar />
+        </div>
       </body>
     </html>
   );
