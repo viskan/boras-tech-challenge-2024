@@ -1,44 +1,55 @@
-import { type Dispatch, type SetStateAction, useEffect, useState } from "react";
+"use client";
+
+import {
+  type Dispatch,
+  type SetStateAction,
+  useEffect,
+  useState,
+} from "react";
 import { type Event, eventTypeKeys } from "./Event";
-import { env } from "~/env";
 import Input from "../../_components/Input";
 import MapContainer from "~/app/_components/MapContainer";
+import { env } from "~/env.js";
 
 interface EventFormProps {
   event: Event;
   setEvent: Dispatch<SetStateAction<Event>>;
 }
-interface MapProps {
-  position?: {
-    longitude: number;
-    latitude: number;
-  };
-}
+
 export default function EventForm({ event, setEvent }: EventFormProps) {
-  const [position, setPosition] = useState<MapProps>({ position: undefined });
+  const [address, setAddress] = useState({ address: "" });
   useEffect(() => {
     const dataFetch = async () => {
       try {
+
         const response = await fetch(
-          `https://api.mapbox.com/geocoding/v5/mapbox.places/kristineberg.json?proximity=ip&access_token=pk.eyJ1IjoibWFoYW4tYXQtYnRjIiwiYSI6ImNsdzlibmttaTAyNnEyaW15N3hyNjY3eXQifQ.bWe0T8XuqS4ajdcJ3WTQRQ`,
+          `https://api.mapbox.com/geocoding/v5/mapbox.places/${address.address}.json?proximity=ip&access_token=` + env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN,
         );
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
-        const jsonData: { features: any } = await response.json();
-        console.log("hej");
-        setPosition({
-          position: { longitude: 12.9420561305697, latitude: 57.721301650499 },
-        });
-        return jsonData;
+        const jsonData: {
+          features: Array<{
+            center: [number, number];
+          }>;
+        } = await response.json();
+
+        const features = jsonData.features[0];
+        if (features?.center[0]) {
+          setEvent((prevState) => ({
+            ...prevState,
+            longitude: features.center[0],
+            latitude: features.center[1],
+          }));
+        }
       } catch (error) {
         console.error("error", error);
       }
     };
 
     void dataFetch();
-  }, []);
+  }, [setEvent, address]);
 
   const onChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newValue = e.target.value;
@@ -47,52 +58,55 @@ export default function EventForm({ event, setEvent }: EventFormProps) {
       eventType: newValue as Event["eventType"],
     }));
   };
+
   return (
-    <div className="max-w-3xl overflow-hidden rounded">
-      <h1 className="p-6 text-5xl font-extrabold tracking-tight sm:text-[5rem]">
-        <span className="text-accent">
-          {event.name ? event.name : "My New Event"}
-        </span>
-      </h1>
-      <Input
-        title=""
-        placeholder="Name"
-        object={event}
-        setObject={setEvent}
-        fieldKey="name"
-      />
-      <Input
-        title=""
-        placeholder="Description"
-        object={event}
-        setObject={setEvent}
-        fieldKey="description"
-      />
-      <div className="flex items-center justify-center">
-        <select
-          onChange={onChange}
-          className="focus:shadow-outline flex h-10 w-64 appearance-none justify-center rounded-lg border pl-3 pr-6 text-center text-base text-black placeholder-gray-600"
-        >
-          {eventTypeKeys.map((option) => (
-            <option key={option} value={option}>
-              {option}
-            </option>
-          ))}
-        </select>
+    <div className="w-full max-w-3xl rounded p-2">
+      <div className="px-6 py-4">
+        <h2 className="mb-2 text-xl font-bold">{event.name}</h2>
+        <p className="text-base text-gray-700">{event.description}</p>
+        <Input
+          title=""
+          placeholder="Name"
+          object={event}
+          setObject={setEvent}
+          fieldKey="name"
+        />
+        <Input
+          title=""
+          placeholder="Description"
+          object={event}
+          setObject={setEvent}
+          fieldKey="description"
+        />
+        <div className="flex items-center justify-center">
+          <select
+            onChange={onChange}
+            className="w-full max-w-md rounded-md border px-3 py-2 text-black focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            {eventTypeKeys.map((option) => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
+        </div>
+        <Input
+          title=""
+          placeholder="Address"
+          object={address}
+          setObject={setAddress}
+          fieldKey="address"
+        />
       </div>
       <div className="mt-5 h-60">
         <MapContainer
-          token={
-            "pk.eyJ1IjoibWFoYW4tYXQtYnRjIiwiYSI6ImNsdzlibmttaTAyNnEyaW15N3hyNjY3eXQifQ.bWe0T8XuqS4ajdcJ3WTQRQ"
-          }
+          token={env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
           events={[]}
-          position={position.position}
+          eventTypeForNew={event.eventType}
+          position={{ longitude: event.longitude, latitude: event.latitude }}
           size={{ height: "100%", width: "100%" }}
         />
       </div>
-      <button className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-500 text-white shadow-lg">
-        +
-      </button>
     </div>
   );
 }

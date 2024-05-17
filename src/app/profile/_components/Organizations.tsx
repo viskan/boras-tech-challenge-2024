@@ -8,7 +8,7 @@ const Organizations = async () => {
     return (
         <div>
             <div className="m-3">
-                <strong>Organisationer:</strong>
+                <strong>Organizations:</strong>
                 {organizations.map(organization => (
                     <div key={organization.id} className="flex">
                         {organization.name}
@@ -19,7 +19,7 @@ const Organizations = async () => {
                 ))}
             </div>
             <Link href="/profile/organizations/new">
-                <Button>Lägg till ny organisation</Button>
+                <Button>Add new organization</Button>
             </Link>
         </div>
     );

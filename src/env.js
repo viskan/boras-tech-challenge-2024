@@ -26,7 +26,6 @@ export const env = createEnv({
     GOOGLE_CLIENT_SECRET: z.string(),
     FACEBOOK_CLIENT_ID: z.string(),
     FACEBOOK_CLIENT_SECRET: z.string(),
-    MAPBOX_ACCESS_TOKEN: z.string(),
   },
 
   /**
@@ -36,6 +35,7 @@ export const env = createEnv({
    */
   client: {
     // NEXT_PUBLIC_CLIENTVAR: z.string(),
+    NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN: z.string(),
   },
 
   /**
@@ -51,7 +51,7 @@ export const env = createEnv({
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
     FACEBOOK_CLIENT_ID: process.env.FACEBOOK_CLIENT_ID,
     FACEBOOK_CLIENT_SECRET: process.env.FACEBOOK_CLIENT_SECRET,
-    MAPBOX_ACCESS_TOKEN: process.env.MAPBOX_ACCESS_TOKEN
+    NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN: process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

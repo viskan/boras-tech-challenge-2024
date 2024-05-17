@@ -90,12 +90,11 @@ model Sponsorship {
     id              Int @id @default(autoincrement())
     orgId           Int?
     organization    Organization? @relation(fields: [orgId], references: [id], onDelete: Cascade)
-    name            String
     eventId         Int
     event           Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
-    userId      String
+    userId          String
     user            User @relation(fields: [userId], references: [id], onDelete: Cascade)
-    sponsorComment  String
+    comment         String
 }
 
 model Event {

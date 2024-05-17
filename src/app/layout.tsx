@@ -23,8 +23,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={montserrat.className}>
-      <body className="bg-secondary">
+    <html lang="en" className={`${montserrat.className} no-scrollbar`}>
+      <body className="bg-secondary no-scrollbar">
         <Header />
         <div className="mt-16">
           <TRPCReactProvider>
@@ -33,8 +33,8 @@ export default function RootLayout({
           <div className="fixed bottom-5 left-1/2 -translate-x-1/2 transform">
             <MenuBar />
           </div>
+          <div className="h-28"/>
         </div>
-        <div id="modal-root" />
       </body>
     </html>
   );

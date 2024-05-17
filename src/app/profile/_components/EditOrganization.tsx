@@ -36,21 +36,21 @@ const EditOrganization = ({organization, session}: EditOrganizationProps) => {
     return (
         <div>
             <div className="m-3">
-                <Input object={data} setObject={setData} title="Namn" fieldKey="name"/>
+                <Input object={data} setObject={setData} title="Name" fieldKey="name"/>
             </div>
-            <Button onClick={onSave}>Uppdatera organisationen</Button>
+            <Button onClick={onSave}>Update organization</Button>
 
             <div className="m-3">
-                <strong>Ägare:</strong>
+                <strong>Owners:</strong>
                 {data.users.map(user => (
                     <div key={user.id} className="flex">
                         {user.name}
-                        {user.id === session.user.id && <span className="text-gray-500">&nbsp;(du)</span>}
+                        {user.id === session.user.id && <span className="text-gray-500">&nbsp;(you)</span>}
                         {user.id !== session.user.id && <CircleX className="size-3 mx-1" onClick={() => onRemoveUser(user.id)}/>}
                     </div>
                 ))}
             </div>
-            <Button onClick={() => alert("Not implemented")}>Lägg till ny ägare</Button>
+            <Button onClick={() => alert("Not implemented")}>Add new owner</Button>
         </div>
     );
 };

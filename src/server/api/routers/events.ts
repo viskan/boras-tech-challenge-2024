@@ -9,11 +9,36 @@ import {
 
 export const eventRouter = createTRPCRouter({
   getEvents: publicProcedure.query(async ({ ctx }) => {
-    return ctx.db.event.findMany({
+    const events = await ctx.db.event.findMany({
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        longitude: true,
+        latitude: true,
+        eventType: true,
+        creatorId: true,
+        _count: {
+          select: {
+            likes: true,
+          },
+        },
+      },
       orderBy: {
         id: "desc",
       },
     });
+
+    return events.map(event => ({
+      id: event.id,
+      name: event.name,
+      description: event.description,
+      latitude: event.latitude,
+      longitude: event.longitude,
+      eventType: event.eventType,
+      creatorId: event.creatorId,
+      likesCount: event._count.likes,
+    })).sort((a, b) => b.likesCount - a.likesCount);
   }),
 
   getEvent: publicProcedure
@@ -38,6 +63,26 @@ export const eventRouter = createTRPCRouter({
               id: "desc",
             }
           },
+          sponsorships: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  image: true,
+                  name: true,
+                },
+              },
+              organization: {
+                select: {
+                  id: true,
+                  name: true,
+                },
+              },
+            },
+            orderBy: {
+              id: "desc",
+            }
+          },
           likes: {
             where: {
               userId: ctx.session?.user.id ?? "",
@@ -55,8 +100,6 @@ export const eventRouter = createTRPCRouter({
         return null;
       }
 
-      console.log(event.comments);
-
       return {
         id: event.id,
         name: event.name,
@@ -67,7 +110,8 @@ export const eventRouter = createTRPCRouter({
         creatorId: event.creatorId,
         haveLiked: event.likes.length > 0,
         likesCount: event._count.likes,
-        comments: event.comments
+        comments: event.comments,
+        sponsorships: event.sponsorships,
       };
     }),
 
@@ -95,6 +139,29 @@ export const eventRouter = createTRPCRouter({
           eventId: input.eventId,
           comment: input.comment,
           userId: ctx.session.user.id,
+        },
+      });
+    }),
+
+  sponsorEvent: protectedProcedure
+    .input(z.object({ eventId: z.number(), orgId: z.number().optional(), comment: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.sponsorship.create({
+        data: {
+          eventId: input.eventId,
+          userId: ctx.session.user.id,
+          comment: input.comment,
+          ...({orgId: input.orgId}),
+        },
+      });
+    }),
+
+  unSponsorEvent: protectedProcedure
+    .input(z.object({ sponsorShipId: z.number() }))
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.sponsorship.delete({
+        where: {
+          id: input.sponsorShipId,
         },
       });
     }),

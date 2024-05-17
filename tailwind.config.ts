@@ -48,7 +48,7 @@ const config = {
           foreground: "hsl(var(--v-accent-foreground))",
         },
         popover: {
-          DEFAULT: "hsl(var(--popover))",
+          DEFAULT: "hsl(var(--v-secondary))",
           foreground: "hsl(var(--popover-foreground))",
         },
         card: {

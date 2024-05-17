@@ -10,10 +10,10 @@ export default function SignIn() {
     return (
         <div>
             <div>
-                <Button onClick={() => signIn("google")}>Logga in med Google</Button>
+                <Button onClick={() => signIn("google")}>Sign in with Google</Button>
             </div>
             <div>
-                <Button onClick={() => signIn("facebook")}>Logga in med Facebook</Button>
+                <Button onClick={() => signIn("facebook")}>Sign in with Facebook</Button>
             </div>
         </div>
     );

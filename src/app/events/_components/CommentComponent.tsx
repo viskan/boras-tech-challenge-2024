@@ -14,7 +14,7 @@ import { api } from "~/trpc/react";
 
 interface CommentComponentProps {
   event: inferRouterOutputs<AppRouter>["event"]["getEvent"];
-  session: NonNullable<Awaited<ReturnType<typeof getServerAuthSession>>>;
+  session: Awaited<ReturnType<typeof getServerAuthSession>>;
 }
 
 function CommentComponent({event, session}: CommentComponentProps) {
@@ -38,60 +38,69 @@ function CommentComponent({event, session}: CommentComponentProps) {
   const handleSubmit = async () => {
     if (!comment.comment) return;
     await addComment.mutateAsync({eventId: event.id, comment: comment.comment});
-    setComment({comment: ""});
+    setComment(prev => ({...prev, comment: ""}));
   };
 
   const handleDelete = async (commentId: number) => {
     await deleteComment.mutateAsync({commentId});
   }
-  
 
-const leftAttachment = (
-  <Avatar className="mr-2">
-    <AvatarFallback>{session.user.name}</AvatarFallback>
-    {session.user.image && (
-      <AvatarImage src={session.user.image} alt={session.user.name ?? ""} />
-    )}
-  </Avatar>
-);
   return (
-    <div className="flex flex-col">
-      <div className="flex w-full items-center">
-        <div className="bg-red flex-grow">
-          <Input
-            object={comment}
-            placeholder="Add a comment..."
-            setObject={setComment}
-            fieldKey="comment"
-            title=""
-            leftAttachment={leftAttachment}
-          />
-        </div>
-        <Button onClick={handleSubmit}>Add comment</Button>
-      </div>
       <div className="flex flex-col">
-        {event.comments.map((comment) => (
-          <div key={comment.id} className="flex items-center bg-muted m-2 p-2 rounded-3xl">
-            <Avatar className="mr-2">
-              <AvatarFallback>{comment.user.name}</AvatarFallback>
-              {comment.user.image && (
-                <AvatarImage
-                  src={comment.user.image}
-                  alt={comment.user.name ?? ""}
-                />
-              )}
-            </Avatar>
+        {session && (
+          <div className="flex w-full items-center my-2">
             <div className="bg-red flex-grow">
-              <div className="font-semibold">{comment.user.name}</div>
-              <div>{comment.comment}</div>
+              <Input
+                object={comment}
+                placeholder="Add a comment..."
+                setObject={setComment}
+                fieldKey="comment"
+                title=""
+                leftAttachment={(
+                  <Avatar className="mr-2">
+                    <AvatarFallback>{session.user.name}</AvatarFallback>
+                    {session.user.image && (
+                      <AvatarImage src={session.user.image} alt={session.user.name ?? ""} />
+                    )}
+                  </Avatar>
+                )}
+              />
             </div>
-            <div>
-              {comment.user.id === session.user.id && <TrashIcon cursor={"pointer"} onClick={() => handleDelete(comment.id)} />}
-            </div>
+            <Button onClick={handleSubmit}>Add comment</Button>
           </div>
-        ))}
+        )}
+        <div className="flex flex-col">
+          {event.comments.length === 0 && <div>No comments</div>}
+          {event.comments.map((comment) => (
+            <div
+              key={comment.id}
+              className="m-2 flex items-center rounded-3xl bg-muted p-2"
+            >
+              <Avatar className="mr-2">
+                <AvatarFallback>{comment.user.name}</AvatarFallback>
+                {comment.user.image && (
+                  <AvatarImage
+                    src={comment.user.image}
+                    alt={comment.user.name ?? ""}
+                  />
+                )}
+              </Avatar>
+              <div className="bg-red flex-grow">
+                <div className="font-semibold">{comment.user.name}</div>
+                <div>{comment.comment}</div>
+              </div>
+              <div>
+                {session && comment.user.id === session.user.id && (
+                  <TrashIcon
+                    cursor={"pointer"}
+                    onClick={() => handleDelete(comment.id)}
+                  />
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
   );
 }
 

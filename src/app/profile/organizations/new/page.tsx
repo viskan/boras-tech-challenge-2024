@@ -23,9 +23,9 @@ const NewOrganizationPage = () => {
         <div>
             <div className="h-20"/>
             <div className="m-3">
-                <Input object={data} setObject={setData} title="Namn" fieldKey="name"/>
+                <Input object={data} setObject={setData} title="Name" fieldKey="name"/>
             </div>
-            <Button onClick={onAddOrganization}>Lägg till organisation</Button>
+            <Button onClick={onAddOrganization}>Add organization</Button>
         </div>
     );
 };

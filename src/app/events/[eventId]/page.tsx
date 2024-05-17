@@ -4,8 +4,12 @@ import { env } from "~/env";
 import { api } from "~/trpc/server";
 import CommentComponent from "../_components/CommentComponent";
 import ThumbsUpComponent from "../_components/ThumbsUp";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { getServerAuthSession } from "~/server/auth";
-import { redirect } from 'next/navigation'
+import { redirect } from "next/navigation";
+import SponsorsComponent from "../_components/SponsorsComponent";
+import MapPin from "~/components/ui/map-pin";
+import getEventTypeTitle from "~/utils/event-type-title";
 
 type HomeProps = {
   params: {
@@ -17,20 +21,16 @@ export default async function Home({ params }: HomeProps) {
   const session = await getServerAuthSession();
   const event = await api.event.getEvent({ id: Number(params.eventId) });
 
-  if (!session) {
-    redirect("/login");
-    return;
-  }
-
   if (!event) {
     return <div>Event not found</div>;
   }
-
+  
   return (
-    <div className="flex h-[80vh] w-full justify-center pb-6 overflow-hidden">
-      <div className="max-w-3xl rounded overflow-scroll overflow-x-hidden p-2">
+    <div className="flex justify-center pb-6">
+      <div className="w-full max-w-3xl rounded p-2">
         <div className="px-6 py-4">
-          <div className="mb-2 text-xl font-bold">{event.name}</div>
+          <h2 className="text-xl font-bold">{event.name}</h2>
+          <p className="mb-2 text-xs uppercase">{getEventTypeTitle(event.eventType)}</p>
           <p className="text-base text-gray-700">{event.description}</p>
         </div>
 
@@ -38,19 +38,36 @@ export default async function Home({ params }: HomeProps) {
 
         <div className="h-60">
           <MapContainer
-            token={env.MAPBOX_ACCESS_TOKEN}
+            token={env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
             events={[{ ...event }]}
             size={{ height: "100%", width: "100%" }}
+            position={{longitude:event.longitude, latitude:event.latitude}}
           />
         </div>
         <div className="mt-10 flex items-center justify-center">
-          <ThumbsUpComponent eventId={event.id} haveLiked={event.haveLiked} />
+          <ThumbsUpComponent
+            eventId={event.id}
+            haveLiked={event.haveLiked}
+            isLoggedIn={session !== null}
+          />
           <div className="items-center justify-center text-center">
             <p className="mr-2 text-3xl">{event.likesCount}</p>
           </div>
         </div>
-        <Divider title="Comments" />
-        <CommentComponent session={session} event={event} />
+        <div className="flex justify-center items-center">
+        <Tabs defaultValue="comments" className="w-full">
+          <TabsList className="grid grid-cols-2">
+            <TabsTrigger value="comments">Comments</TabsTrigger>
+            <TabsTrigger value="sponsors">Sponsors</TabsTrigger>
+          </TabsList>
+          <TabsContent value="comments">
+            <CommentComponent session={session} event={event} />
+          </TabsContent>
+          <TabsContent value="sponsors">
+            <SponsorsComponent session={session} event={event} />
+          </TabsContent>
+        </Tabs>
+        </div>
       </div>
     </div>
   );

@@ -14,8 +14,6 @@ type EditOrganizationPageProps = {
 const EditOrganizationPage = async ({params}: EditOrganizationPageProps) => {
     const organization = await api.organization.getById({organizationId: Number(params.organizationId)});
     const session = await getServerAuthSession();
-    // const [data, setData] = useState({name: ""});
-    // const router = useRouter();
 
     return (
         <div>
