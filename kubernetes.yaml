@@ -75,6 +75,7 @@ spec:
   commonName: xn--levelup-bors-3cb.viskan.com
   dnsNames:
     - xn--levelup-bors-3cb.viskan.com
+    - levelup-boras.viskan.com
   issuerRef:
     name: letsencrypt
     kind: ClusterIssuer
@@ -107,3 +108,31 @@ spec:
     - secretName: application-certificate
       hosts:
         - xn--levelup-bors-3cb.viskan.com
+
+---
+kind: Ingress
+apiVersion: networking.k8s.io/v1
+metadata:
+  namespace: boras-tech-challenge-2024
+  name: redirects
+  labels:
+    app: boras-tech-challenge-2024
+  annotations:
+    nginx.ingress.kubernetes.io/permanent-redirect: https://levelup-borås.viskan.com
+spec:
+  ingressClassName: external
+  rules:
+    - host: levelup-boras.viskan.com
+      http:
+        paths:
+          - pathType: Prefix
+            path: /
+            backend:
+              service:
+                name: application
+                port:
+                  number: 3000
+  tls:
+    - secretName: application-certificate
+      hosts:
+        - levelup-boras.viskan.com

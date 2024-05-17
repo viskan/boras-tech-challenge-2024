@@ -24,6 +24,7 @@ export const eventRouter = createTRPCRouter({
           },
         },
       },
+
       orderBy: {
         id: "desc",
       },
@@ -38,7 +39,9 @@ export const eventRouter = createTRPCRouter({
       eventType: event.eventType,
       creatorId: event.creatorId,
       likesCount: event._count.likes,
-    })).sort((a, b) => b.likesCount - a.likesCount);
+    }))
+    .filter((event) => event.name !== null && event.name !== "")
+    .sort((a, b) => b.likesCount - a.likesCount);
   }),
 
   getEvent: publicProcedure

@@ -114,8 +114,8 @@ model Event {
 
 enum EventType {
     IDEA
-    FUN_EVENT
-    FIX_EVENT
+    PROBLEM
+    EVENT
 }
 
 model VerificationToken {

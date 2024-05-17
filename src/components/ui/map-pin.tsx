@@ -27,11 +27,11 @@ type MapPinProps = {
 const MapPin = ({isClickable, className, eventType}: MapPinProps) => {
     const color = (() => {
         switch (eventType) {
-            case "FIX_EVENT": {
+            case "PROBLEM": {
                 return "#f07767";
             }
 
-            case "FUN_EVENT": {
+            case "EVENT": {
                 return "#74b5f2";
             }
 

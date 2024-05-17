@@ -23,10 +23,12 @@ interface MapContainerProps {
     longitude: number;
     latitude: number;
   };
+  onPositionChange: (longitude:number, latitude:number) => void;
 }
 
-const MapContainer = ({ token, events, eventTypeForNew, size, position }: MapContainerProps) => {
+const MapContainer = ({ token, events, eventTypeForNew, size, position, onPositionChange }: MapContainerProps) => {
   const mapRef = useRef<MapRef>(null);
+  console.log(position?.latitude)
   useEffect(() => {
     if (position) {
       mapRef.current?.flyTo({
@@ -56,6 +58,7 @@ const MapContainer = ({ token, events, eventTypeForNew, size, position }: MapCon
           eventType={eventTypeForNew}
           longitude={position.longitude}
           latitude={position.latitude}
+          onPositionChange={onPositionChange}
         />
       )}
     </Map>
@@ -76,7 +79,7 @@ const EventMarker = ({ event , draggable = false}: { event: Event , draggable?: 
       >
           <DialogTrigger asChild>
             <span>
-              <MapPin isClickable eventType={event.eventType}/>
+              <MapPin isClickable eventType={event.eventType} />
             </span>
           </DialogTrigger>
           <DialogContent>
@@ -96,10 +99,12 @@ const SelectionMarker = ({
   eventType,
   longitude,
   latitude,
+  onPositionChange
 }: {
   eventType: Event["eventType"];
   longitude: number;
   latitude: number;
+  onPositionChange:(longitude:number, latitude:number) => void
 }) => {
   return (
     <Marker
@@ -107,6 +112,7 @@ const SelectionMarker = ({
       latitude={latitude}
       longitude={longitude}
       anchor={"bottom"}
+      onDragEnd={(e) => onPositionChange(e.lngLat.lng, e.lngLat.lat)}
     >
       <MapPin eventType={eventType} className="cursor-pointer" />
     </Marker>

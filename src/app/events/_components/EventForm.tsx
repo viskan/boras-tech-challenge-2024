@@ -1,15 +1,18 @@
 "use client";
 
-import {
-  type Dispatch,
-  type SetStateAction,
-  useEffect,
-  useState,
-} from "react";
+import { type Dispatch, type SetStateAction, useEffect, useState } from "react";
 import { type Event, eventTypeKeys } from "./Event";
 import Input from "../../_components/Input";
 import MapContainer from "~/app/_components/MapContainer";
 import { env } from "~/env.js";
+import { capitalize } from "~/lib/utils";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select";
 
 interface EventFormProps {
   event: Event;
@@ -17,13 +20,19 @@ interface EventFormProps {
 }
 
 export default function EventForm({ event, setEvent }: EventFormProps) {
+  const [lastCheckedAddress, setLastCheckedAddress] = useState("");
   const [address, setAddress] = useState({ address: "" });
   useEffect(() => {
     const dataFetch = async () => {
       try {
+        if (lastCheckedAddress === address.address) {
+          return;
+        }
         const response = await fetch(
-          `https://api.mapbox.com/geocoding/v5/mapbox.places/${address.address}.json?proximity=ip&access_token=` + env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN,
+          `https://api.mapbox.com/geocoding/v5/mapbox.places/${address.address}.json?proximity=ip&access_token=` +
+            env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN,
         );
+        setLastCheckedAddress(address.address);
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
@@ -48,46 +57,58 @@ export default function EventForm({ event, setEvent }: EventFormProps) {
     };
 
     void dataFetch();
-  }, [setEvent, address]);
+  }, [setEvent, address.address]);
 
-  const onChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const newValue = e.target.value;
+  const onChange = (value: string) => {
+    console.log('value', value);
+    
     setEvent((prevState) => ({
       ...prevState,
-      eventType: newValue as Event["eventType"],
+      eventType: value as Event["eventType"],
     }));
   };
 
+  const onPositionChange = (longitude: number, latitude:number) => {
+    console.log("what")
+    setEvent((prevState) => ({
+      ...prevState,
+      longitude:longitude,
+      latitude:latitude
+    }));
+  };
   return (
-    <div className="w-full max-w-3xl rounded p-2">
-      <div className="px-6 py-4">
-        <h2 className="mb-2 text-xl font-bold">{event.name}</h2>
-        <p className="text-base text-gray-700">{event.description}</p>
+    <div className="w-full max-w-3xl rounded p-2 flex flex-col">
+      <div className="px-6 py-4 w-[400px] self-center">
         <Input
           title=""
           placeholder="Name"
           object={event}
           setObject={setEvent}
           fieldKey="name"
+          className="mb-2"
         />
+        
         <Input
           title=""
           placeholder="Description"
           object={event}
           setObject={setEvent}
           fieldKey="description"
+          className="mb-2"
         />
-        <div className="flex items-center justify-center">
-          <select
-            onChange={onChange}
-            className="w-full max-w-md rounded-md border px-3 py-2 text-black focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            {eventTypeKeys.map((option) => (
-              <option key={option} value={option}>
-                {option}
-              </option>
-            ))}
-          </select>
+        <div className="w-full items-center justify-center max-w-[400px] mb-2">
+          <Select onValueChange={onChange}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select Event Type" />
+            </SelectTrigger>
+            <SelectContent>
+              {eventTypeKeys.map((option) => (
+                <SelectItem key={option} value={option}>
+                  {capitalize(option)}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
         <Input
           title=""
@@ -95,6 +116,7 @@ export default function EventForm({ event, setEvent }: EventFormProps) {
           object={address}
           setObject={setAddress}
           fieldKey="address"
+          className="mb-2"
         />
       </div>
       <div className="mt-5 h-60">
@@ -104,6 +126,7 @@ export default function EventForm({ event, setEvent }: EventFormProps) {
           eventTypeForNew={event.eventType}
           position={{ longitude: event.longitude, latitude: event.latitude }}
           size={{ height: "100%", width: "100%" }}
+          onPositionChange={onPositionChange}
         />
       </div>
     </div>

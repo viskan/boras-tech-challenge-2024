@@ -9,8 +9,9 @@ import {
 } from "~/components/ui/select";
 import { eventTypeKeys } from "./Event";
 import { useCallback } from "react";
+import { capitalize } from "~/lib/utils";
 
-const items = ["ALL",...eventTypeKeys] as const;
+const items = ["ALL", ...eventTypeKeys] as const;
 
 const Filter = () => {
   const router = useRouter();
@@ -40,18 +41,20 @@ const Filter = () => {
   };
 
   return (
-    <Select onValueChange={handleFilterSelect}>
-      <SelectTrigger className="w-[400px]">
-        <SelectValue placeholder="Select Event Type" />
-      </SelectTrigger>
-      <SelectContent className="w-[400px]">
-        {items.map((option) => (
-          <SelectItem key={option} value={option}>
-            {option}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
+    <div className="w-full max-w-3xl flex justify-center align-center">
+      <Select onValueChange={handleFilterSelect}>
+        <SelectTrigger>
+          <SelectValue placeholder="Select Event Type" />
+        </SelectTrigger>
+        <SelectContent>
+          {items.map((option) => (
+            <SelectItem key={option} value={option}>
+              {capitalize(option)}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
   );
 };
 

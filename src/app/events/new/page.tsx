@@ -14,7 +14,7 @@ export default function NewEvent() {
     name: "",
     longitude: 12.9398,
     latitude: 57.721,
-    eventType: "FUN_EVENT",
+    eventType: "EVENT",
     description: "",
     creatorId: "clw9lg9vx0001d03p870wfnoq",
   });
@@ -33,7 +33,7 @@ export default function NewEvent() {
       <EventForm event={event} setEvent={setEvent} />
       <div className="flex items-center justify-center">
         <button
-          className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-500 text-white shadow-lg"
+          className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-white shadow-lg"
           onClick={() => onClickEvent(event)}
         >
           <LucidePlus size={24} />

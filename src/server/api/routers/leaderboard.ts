@@ -22,7 +22,9 @@ export const leaderboardRouter = createTRPCRouter({
         return users.map(user => ({
           score : user._count.events*3 + user._count.likes + user._count.comments*2,
           name: user.name
-        })).sort((a, b) => {
+        }))
+        .filter(user => user.score > 0)
+        .sort((a, b) => {
           return b.score - a.score
         });
 

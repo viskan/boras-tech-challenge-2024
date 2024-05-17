@@ -5,7 +5,7 @@ import { z } from 'zod';
 //     organizationId?: number,
 //     name: string,
 // };
-const eventTypeKeys = ["FUN_EVENT", "IDEA", "FIX_EVENT"] as const
+const eventTypeKeys = ["IDEA", "PROBLEM", "EVENT"] as const
 
 const eventSchema = z.object({
   id: z.number().optional(),

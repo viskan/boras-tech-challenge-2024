@@ -1,15 +1,15 @@
 "use client";
 
-import { inferRouterOutputs } from "@trpc/server";
+import { type inferRouterOutputs } from "@trpc/server";
 import { TrashIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Input from "~/app/_components/Input";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
-import { AppRouter } from "~/server/api/root";
+import { type AppRouter } from "~/server/api/root";
 
-import { getServerAuthSession } from "~/server/auth";
+import { type getServerAuthSession } from "~/server/auth";
 import { api } from "~/trpc/react";
 
 interface CommentComponentProps {
@@ -20,11 +20,12 @@ interface CommentComponentProps {
 function CommentComponent({event, session}: CommentComponentProps) {
   const [comment, setComment] = useState({comment: "", dummyId: 0});
   const router = useRouter();
+  const utils = api.useUtils();
 
   const addComment = api.event.addComment.useMutation({
     onSuccess: () => {
       router.refresh();
-    }
+    },
   });
 
   const deleteComment = api.event.deleteComment.useMutation({
@@ -36,12 +37,22 @@ function CommentComponent({event, session}: CommentComponentProps) {
   if (!event) return null;
 
   const handleSubmit = async () => {
-    if (!comment.comment) return;
-    await addComment.mutateAsync({eventId: event.id, comment: comment.comment});
+    if (!comment.comment || !session) return;
+    await utils.event.getEvent.cancel();
+    event.comments = [{
+      id: 999999999,
+      comment: comment.comment,
+      eventId: event.id,
+      user: {id: session.user.id, name: session.user.name, image: session.user.image},
+      userId: session.user.id,
+    }, ...event.comments]
     setComment(prev => ({...prev, comment: "", dummyId: prev.dummyId + 1}));
+    await addComment.mutateAsync({eventId: event.id, comment: comment.comment});
   };
 
   const handleDelete = async (commentId: number) => {
+    await utils.event.getEvent.cancel();
+    event.comments = event.comments.filter((c) => c.id !== commentId);
     await deleteComment.mutateAsync({commentId});
   }
 
@@ -51,19 +62,12 @@ function CommentComponent({event, session}: CommentComponentProps) {
           <div className="flex w-full items-center my-2">
             <div className="bg-red flex-grow">
               <Input
+                key={comment.dummyId}
                 object={comment}
                 placeholder="Add a comment..."
                 setObject={setComment}
                 fieldKey="comment"
                 title=""
-                leftAttachment={(
-                  <Avatar className="mr-2">
-                    <AvatarFallback>{session.user.name}</AvatarFallback>
-                    {session.user.image && (
-                      <AvatarImage src={session.user.image} alt={session.user.name ?? ""} />
-                    )}
-                  </Avatar>
-                )}
               />
             </div>
             <Button onClick={handleSubmit}>Add comment</Button>

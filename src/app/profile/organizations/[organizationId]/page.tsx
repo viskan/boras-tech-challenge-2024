@@ -16,8 +16,8 @@ const EditOrganizationPage = async ({params}: EditOrganizationPageProps) => {
     const session = await getServerAuthSession();
 
     return (
-        <div>
-            <div className="h-20"/>
+        <div className="flex flex-col justify-center align-items">
+            <div className="h-20 w-1/2 p-4 mx-auto text-center"/>
             <EditOrganization organization={organization} session={session!}/>
         </div>
     );

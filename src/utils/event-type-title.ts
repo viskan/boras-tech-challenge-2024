@@ -8,11 +8,11 @@ import { type Event } from "~/app/events/_components/Event";
  */
 const getEventTypeTitle = (eventType: Event["eventType"]) => {
     switch (eventType) {
-        case "FIX_EVENT": {
+        case "PROBLEM": {
             return "Problem";
         }
 
-        case "FUN_EVENT": {
+        case "EVENT": {
             return "Event";
         }
 

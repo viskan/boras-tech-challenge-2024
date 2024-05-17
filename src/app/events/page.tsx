@@ -18,7 +18,7 @@ const EventListPage = async ({
   return (
     <main>
       <div className="h-4" />
-      <div className="flex justify-end">
+      <div className="p-3 flex items-center justify-center">
         <Filter />
         <Link href="events/new">
           <CalendarPlus className="m-2" />
@@ -28,6 +28,7 @@ const EventListPage = async ({
       {filteredEvents.map((event) => (
         <EventListItem key={event.id} event={event} />
       ))}
+      <div className="h-20"/>
     </main>
   );
 };
