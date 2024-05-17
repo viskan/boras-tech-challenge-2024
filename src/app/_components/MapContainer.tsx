@@ -16,16 +16,20 @@ interface MapContainerProps {
     width: string;
     height: string;
   };
+  position?: {
+    longitude:number,
+    latitude:number
+  }
 }
 
-const MapContainer = ({ token, events, size }: MapContainerProps) => {
+const MapContainer = ({ token, events, size, position }: MapContainerProps) => {
   return (
     <Map
       mapStyle="mapbox://styles/mapbox/streets-v11"
       mapboxAccessToken={token}
       initialViewState={{
-        latitude: 57.721,
-        longitude: 12.9398,
+        latitude: position?.latitude ? position.latitude : 57.721,
+        longitude: position?.longitude ? position.longitude : 12.9398,
         zoom: 13,
       }}
       style={{ width: size.width, height: size.height }}

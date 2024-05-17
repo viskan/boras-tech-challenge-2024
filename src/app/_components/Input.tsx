@@ -32,7 +32,7 @@ const Input = <A,>({
     });
   };
   return (
-    <div className="flex">
+    <div>
       <label>{title}</label>
       {inputType === "input" && (
         <div className="flex w-full justify-center">

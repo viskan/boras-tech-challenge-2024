@@ -8,23 +8,79 @@ import {
 
 
 export const organizationRouter = createTRPCRouter({
-  getById: publicProcedure.input(z.string()).query(async ({ ctx })=> {
-    const test = await ctx.db.organization.findMany();
-    return test;
+  getById: publicProcedure.input(z.object({organizationId: z.number(), currentUser: z.boolean().default(true)})).query(async ({ ctx, input })=> {
+    const organization = await ctx.db.organization.findUniqueOrThrow({
+      select: {
+        id: true,
+        name: true,
+        users: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+      where: {
+        id: input.organizationId,
+        users: input.currentUser ? {
+          some: {
+            id: ctx.session?.user.id,
+          },
+        } : undefined,
+      },
+    });
+
+    return organization;
   }),
 
-  getAll: publicProcedure.query(async ({ ctx }) => {
-    return await ctx.db.organization.findMany();
-  }),
+  addOrganization: protectedProcedure
+    .input(z.object({ name: z.string().min(1) }))
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db.organization.create({
+        data: {
+          name: input.name,
+          users: {
+            connect: {
+              id: ctx.session.user.id,
+            },
+          },
+        }
+      });
+    }),
+
+  saveOrganization: protectedProcedure
+    .input(z.object({ organizationId: z.number(), name: z.string().min(1) }))
+    .mutation(async ({ ctx, input }) => {
+      // Just verify that the user owns this organization
+      await ctx.db.organization.findUniqueOrThrow({
+        where: {
+          id: input.organizationId,
+          users: {
+            some: {
+              id: ctx.session.user.id,
+            },
+          },
+        },
+      });
+
+      // Update the organization
+      await ctx.db.organization.update({
+        where: {
+          id: input.organizationId,
+        },
+        data: {
+          name: input.name,
+        },
+      });
+    }),
 
   getMyOrganizations: protectedProcedure
-    .input(z.object({ userId: z.string().min(1) }))
-    .query(async ({ ctx, input }) => {
+    .query(async ({ ctx }) => {
     return await ctx.db.organization.findMany({
       where: {
         users: {
           some: {
-            id: input.userId,
+            id: ctx.session.user.id,
           },
         },
       },

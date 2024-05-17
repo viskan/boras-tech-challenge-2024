@@ -1,6 +1,6 @@
 import "~/styles/globals.css";
 
-import { Montserrat } from "@next/font/google";
+import { Montserrat } from "next/font/google";
 
 import { TRPCReactProvider } from "~/trpc/react";
 import MenuBar from "~/components/ui/menu-bar";
@@ -30,7 +30,7 @@ export default function RootLayout({
           <TRPCReactProvider>
             {children}
           </TRPCReactProvider>
-          <div className="absolute bottom-5 left-1/2 -translate-x-1/2 transform">
+          <div className="fixed bottom-5 left-1/2 -translate-x-1/2 transform">
             <MenuBar />
           </div>
         </div>

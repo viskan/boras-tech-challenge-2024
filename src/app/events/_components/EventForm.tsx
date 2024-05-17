@@ -1,4 +1,4 @@
-import { type Dispatch, type SetStateAction , useEffect} from "react";
+import { type Dispatch, type SetStateAction, useEffect, useState } from "react";
 import { type Event, eventTypeKeys } from "./Event";
 import { env } from "~/env";
 import Input from "../../_components/Input";
@@ -8,7 +8,36 @@ interface EventFormProps {
   event: Event;
   setEvent: Dispatch<SetStateAction<Event>>;
 }
+interface MapProps {
+  position?: {
+    longitude:number,
+    latitude:number
+  }
+}
 export default function EventForm({ event, setEvent }: EventFormProps) {
+  const [position, setPosition] = useState<MapProps>({ position: undefined });
+    useEffect(() => {
+      const dataFetch = async () => {
+        try {
+          const response = await fetch(
+            `https://api.mapbox.com/geocoding/v5/mapbox.places/allegatan.json?proximity=ip&access_token=pk.eyJ1IjoibWFoYW4tYXQtYnRjIiwiYSI6ImNsdzlibmttaTAyNnEyaW15N3hyNjY3eXQifQ.bWe0T8XuqS4ajdcJ3WTQRQ`,
+          );
+          if (!response.ok) { 
+            throw new Error('Network response was not ok');
+          }
+          const jsonData: { features: any } = await response.json(); 
+          setPosition({ position: { longitude: 12.9420561305697, latitude: 57.721301650499 } });
+          console.log(position)
+            return jsonData;
+        } catch (error) {
+          console.error("error", error);
+        }
+      };
+  
+      void dataFetch();
+  }, []);
+  
+  
   const onChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newValue = e.target.value;
     setEvent((prevState) => ({
@@ -16,6 +45,7 @@ export default function EventForm({ event, setEvent }: EventFormProps) {
       eventType: newValue as Event["eventType"],
     }));
   };
+
   return (
     <div className="max-w-3xl overflow-hidden rounded">
       <h1 className="p-6 text-5xl font-extrabold tracking-tight sm:text-[5rem]">
@@ -50,12 +80,15 @@ export default function EventForm({ event, setEvent }: EventFormProps) {
         </select>
       </div>
       <div className="mt-5 h-60">
-          <MapContainer
-            token={"pk.eyJ1IjoibWFoYW4tYXQtYnRjIiwiYSI6ImNsdzlibmttaTAyNnEyaW15N3hyNjY3eXQifQ.bWe0T8XuqS4ajdcJ3WTQRQ"}
-            events={[]}
-            size={{ height: "100%", width: "100%" }}
-          />
-        </div>
+        <MapContainer
+          token={
+            "pk.eyJ1IjoibWFoYW4tYXQtYnRjIiwiYSI6ImNsdzlibmttaTAyNnEyaW15N3hyNjY3eXQifQ.bWe0T8XuqS4ajdcJ3WTQRQ"
+          }
+          events={[]}
+          position={position.position}
+          size={{ height: "100%", width: "100%" }}
+        />
+      </div>
     </div>
   );
 }

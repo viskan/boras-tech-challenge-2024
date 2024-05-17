@@ -18,12 +18,57 @@ export const eventRouter = createTRPCRouter({
 
   getEvent: publicProcedure
     .input(z.object({ id: z.number() }))
-    .query(({ ctx, input }) => {
-      return ctx.db.event.findFirst({
+    .query(async ({ ctx, input }) => {
+      const event = await ctx.db.event.findFirst({
         where: {
           id: input.id,
         },
+        include: {
+          comments: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  name: true,
+                  image: true,
+                },
+              }
+            },
+            orderBy: {
+              id: "desc",
+            }
+          },
+          likes: {
+            where: {
+              userId: ctx.session?.user.id ?? "",
+            },
+          },
+          _count: {
+            select: {
+              likes: true,
+            },
+          },
+        },
       });
+
+      if (!event) {
+        return null;
+      }
+
+      console.log(event.comments);
+
+      return {
+        id: event.id,
+        name: event.name,
+        description: event.description as string,
+        eventType: event.eventType,
+        latitude: event.latitude,
+        longitude: event.longitude,
+        creatorId: event.creatorId,
+        haveLiked: event.likes.length > 0,
+        likesCount: event._count.likes,
+        comments: event.comments
+      };
     }),
 
   create: protectedProcedure
@@ -49,6 +94,35 @@ export const eventRouter = createTRPCRouter({
         data: {
           eventId: input.eventId,
           comment: input.comment,
+          userId: ctx.session.user.id,
+        },
+      });
+    }),
+
+  likeEvent: protectedProcedure
+    .input(z.object({ eventId: z.number() }))
+    .mutation(async ({ ctx, input }) => {
+      const alreadyLiked = await ctx.db.like.findFirst({
+        where: {
+          eventId: input.eventId,
+          userId: ctx.session.user.id,
+        },
+      });
+
+      if (alreadyLiked) {
+        await ctx.db.like.deleteMany({
+            where: {
+              eventId: input.eventId,
+              userId: ctx.session.user.id,
+            },
+        });
+
+        return;
+      }
+
+      return ctx.db.like.create({
+        data: {
+          eventId: input.eventId,
           userId: ctx.session.user.id,
         },
       });
