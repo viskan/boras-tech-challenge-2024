@@ -7,7 +7,7 @@ export default async function Home() {
   const events = await api.event.getEvents();
   return (
     <div>
-      <MapContainer token={token} events={events} />
+      <MapContainer token={token} events={events} size={{width: "100vw", height: "100vh"}} />
     </div>
     // <div className="realtive">
     //   <div className="h-screen w-screen">

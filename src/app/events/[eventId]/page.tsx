@@ -1,33 +1,57 @@
-import Link from "next/link";
-
+import { ArrowBigDownIcon, ArrowBigUpIcon } from "lucide-react";
+import MapContainer from "~/app/map/_components/MapContainer";
+import { env } from "~/env";
 import { api } from "~/trpc/server";
-import EventListItem from "~/app/events/_components/EventListItem";
-import EventForm from "~/app/events/_components/EventForm";
 
 type HomeProps = {
-  params:{
-    eventId:string
-  }
+  params: {
+    eventId: string;
+  };
 };
 
+export default async function Home({ params }: HomeProps) {
+  const event = await api.event.getEvent({ id: Number(params.eventId) });
 
-export default async function Home({params}: HomeProps) {
-  const event = await api.event.getEvent({id: Number(params.eventId) });
-  
-  return (    
-    <main className="flex min-h-screen flex-col items-center justify-start bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
-      <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
-      <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem] mt-0">
-          <span className="text-[hsl(280,100%,70%)]">{event?.name}</span>
-        </h1>
-        <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem] mt-0">
-          {/* <span className="text-[hsl(280,100%,70%)]">{event?.likes} likes </span> */}
-        </h1>
-        <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem] mt-0">
-          {/* <span className="text-[hsl(280,100%,70%)]">Created by {event?.createdBy}</span> */}
-        </h1>
+  if (!event) {
+    return <div>Event not found</div>;
+  }
+
+  return (
+    <div className="flex h-screen justify-center">
+      <div className="max-w-3xl overflow-hidden rounded shadow-lg">
+        <div className="px-6 py-4">
+          <div className="mb-2 text-xl font-bold">{event.name}</div>
+          <p className="text-base text-gray-700">{event.description}</p>
+        </div>
+
+        <Divider title="Location" />
+
+        <div className="h-60">
+          <MapContainer
+            token={env.MAPBOX_ACCESS_TOKEN}
+            events={[event]}
+            size={{ height: "100%", width: "100%" }}
+          />
+        </div>
+        <div className="flex justify-center">
+          <div className="... w-64 flex-initial">
+            <ArrowBigUpIcon />
+          </div>
+          <div className="... w-64 flex-initial">
+            <ArrowBigDownIcon />
+          </div>
+          
+        </div>
       </div>
-    </main>
+    </div>
   );
 }
 
+const Divider = ({ title }: { title: string }) => (
+  <>
+    <div className="mt-10 flex justify-center">
+      <div className="mb-2 text-xl font-bold">{title  }</div>
+    </div>
+    <hr className="mx-auto mb-3 h-1 w-48 rounded border-0 bg-accent dark:bg-gray-700" />
+  </>
+);

@@ -1,19 +1,22 @@
-import {useState} from 'react'
 import { z } from 'zod';
 
-type Sponsor  = {
-    userId?: string,
-    organizationId?: number,
-    name: string,
-};
+// type Sponsor  = {
+//     userId?: string,
+//     organizationId?: number,
+//     name: string,
+// };
+const eventTypeKeys = ["FUN_EVENT", "IDEA", "FIX_EVENT"] as const
 
 const eventSchema = z.object({
-  eventId: z.number().optional(),
+  id: z.number().optional(),
   name: z.string(),
+  description: z.string(),
   latitude: z.number(),
   longitude: z.number(),
-  eventType: z.enum(["FUN_EVENT", "IDEA", "FIX_EVENT"]),
+  eventType: z.enum([...eventTypeKeys]),
+  creatorId: z.string()
 });
 
-export type EventType = z.infer<typeof eventSchema>;
+export type Event = z.infer<typeof eventSchema>;
+export {eventTypeKeys};
 export default eventSchema;

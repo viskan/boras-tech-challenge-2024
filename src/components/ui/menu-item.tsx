@@ -30,7 +30,7 @@ type MenuItemProps = {
  */
 const MenuItem = ({path, icon: Icon, ariaLabel}: MenuItemProps) => {
     const pathname = usePathname();
-    const isSelected = path === pathname;
+    const isSelected = pathname === path || (path.length > 1 && pathname.startsWith(path));
     const color = isSelected ? "text-primary" : "text-white"
     const border = isSelected ? "border" : "";
     const cursor = isSelected ? "cursor-default" : "cursor-pointer";

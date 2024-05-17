@@ -17,7 +17,21 @@ export const organizationRouter = createTRPCRouter({
     return await ctx.db.organization.findMany();
   }),
 
-  create: protectedProcedure
+  getMyOrganizations: protectedProcedure
+    .input(z.object({ userId: z.string().min(1) }))
+    .query(async ({ ctx, input }) => {
+    return await ctx.db.organization.findMany({
+      where: {
+        users: {
+          some: {
+            id: input.userId,
+          },
+        },
+      },
+    });
+  }), 
+});
+ /*create: protectedProcedure
     .input(
       z.object(
         { name: z.string().min(1) },
@@ -30,7 +44,7 @@ export const organizationRouter = createTRPCRouter({
             name: input.name
         }
       });
-    }),
+    }),*/
 
   // addUser: protectedProcedure
   //   .input(
@@ -53,6 +67,5 @@ export const organizationRouter = createTRPCRouter({
   //       },
   //     });
   //   }),
-});
 
 

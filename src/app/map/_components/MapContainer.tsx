@@ -1,23 +1,24 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
 import { env } from "~/env";
-import Map, { FullscreenControl, Marker } from "react-map-gl";
+import Map, { Marker } from "react-map-gl";
 import { inferRouterOutputs } from "@trpc/server";
 import { AppRouter } from "~/server/api/root";
-import { MapPin } from "lucide-react";
-import { EventType } from "~/app/events/_components/Event";
+import { Event } from "~/app/events/_components/Event";
 
-import 'mapbox-gl/dist/mapbox-gl.css';
+import "mapbox-gl/dist/mapbox-gl.css";
+import Link from "next/link";
 
 interface MapContainerProps {
   token: string;
   events: inferRouterOutputs<AppRouter>["event"]["getEvents"];
+  size: {
+    width: string;
+    height: string;
+  };
 }
 
-function MapContainer({ token, events }: MapContainerProps) {
-  //TODO: Add markers to the map when information is available
-
+const MapContainer = ({ token, events, size}: MapContainerProps) => {
   return (
     <Map
       mapStyle="mapbox://styles/mapbox/streets-v11"
@@ -27,26 +28,47 @@ function MapContainer({ token, events }: MapContainerProps) {
         longitude: 12.9398,
         zoom: 13,
       }}
-      style={{ width: "100vw", height: "100vh" }}
+      style={{ width: size.width, height: size.height }}
     >
       {events.map((event) => (
         <EventMarker key={event.id} event={event} />
       ))}
     </Map>
   );
-}
+};
 
 export default MapContainer;
 
-function EventMarker({ event }: { event: EventType }) {
+const EventMarker = ({ event }: { event: Event }) => {
   return (
     <Marker
-      key={event.eventId}
+      key={event.id}
       latitude={event.latitude}
       longitude={event.longitude}
       anchor={"bottom"}
     >
-      <MapPin size={24} cursor="pointer"/>
+      <Link href={`/events/${event.id}`} passHref>
+        <MapPin cursor="pointer" />
+      </Link>
     </Marker>
   );
-}
+};
+
+const MapPin = ({ ...props }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="46"
+    height="46"
+    viewBox="0 0 46 46"
+    fill="none"
+    stroke="#FF9D00"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className="lucide lucide-map-pin"
+    {...props}
+  >
+    <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" fill="#FF9D00" />
+    <circle cx="12" cy="10" r="3" fill="#fff" />
+  </svg>
+);

@@ -8,9 +8,11 @@ import {
 } from "~/server/api/trpc";
 
 export const eventRouter = createTRPCRouter({
-  getEvents: publicProcedure.query(({ ctx }) => {
+  getEvents: publicProcedure.query(async ({ ctx }) => {
     return ctx.db.event.findMany({
-      orderBy: { id: "desc" },
+      orderBy: {
+        id: "desc",
+      },
     });
   }),
 
@@ -27,12 +29,14 @@ export const eventRouter = createTRPCRouter({
   create: protectedProcedure
     .input(eventSchema)
     .mutation(async ({ ctx, input }) => {
+      console.log(input)
       return ctx.db.event.create({
         data: {
           name: input.name,
-          latitude: 1.0,
-          longitude: 2.0,
-          eventType: "FUN_EVENT",
+          latitude: input.latitude,
+          longitude: input.longitude,
+          eventType: input.eventType,
+          description: input.description,
           creatorId: ctx.session.user.id,
         },
       });

@@ -21,34 +21,32 @@ spec:
     metadata:
       labels:
         app: boras-tech-challenge-2024
-    containers:
-      - name: application
-        image: boras-tech-challenge-viskan:latest
-        ports:
-          - name: application
-            image: test
-            imagePullPolicy: Always
-            ports:
-              - name: http
-                containerPort: 3000
-                protocol: TCP
-        env:
-          - name: DATABASE_URL
-            value: postgresql://<workspace ID>:<api key>@eu-west-1.sql.xata.sh:5432/boras-tech-challenge-2024:main?sslmode=require
-          - name: NEXTAUTH_SECRET
-            value: ...
-          - name: NEXTAUTH_URL
-            value: http://localhost:3000
-          - name: GOOGLE_CLIENT_ID
-            value: ...
-          - name: GOOGLE_CLIENT_SECRET
-            value: ...
-          - name: FACEBOOK_CLIENT_ID
-            value: ...
-          - name: FACEBOOK_CLIENT_SECRET
-            value: ...
-          - name: MAPBOX_ACCESS_TOKEN
-            value: ...
+    spec:
+      containers:
+        - name: application
+          image: docker.viskan.com/boras-tech-challenge-2024:latest
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 3000
+              protocol: TCP
+          env:
+            - name: DATABASE_URL
+              value: postgresql://<workspace ID>:<api key>@eu-west-1.sql.xata.sh:5432/boras-tech-challenge-2024:main?sslmode=require
+            - name: NEXTAUTH_SECRET
+              value: ...
+            - name: NEXTAUTH_URL
+              value: 'https://levelup-borås.viskan.com'
+            - name: GOOGLE_CLIENT_ID
+              value: ...
+            - name: GOOGLE_CLIENT_SECRET
+              value: ...
+            - name: FACEBOOK_CLIENT_ID
+              value: ...
+            - name: FACEBOOK_CLIENT_SECRET
+              value: ...
+            - name: MAPBOX_ACCESS_TOKEN
+              value: ...
 
 ---
 kind: Service
@@ -74,9 +72,9 @@ metadata:
     app: boras-tech-challenge-2024
 spec:
   secretName: application-certificate
-  commonName: levelup-borås.viskan.com
+  commonName: xn--levelup-bors-3cb.viskan.com
   dnsNames:
-    - levelup-borås.viskan.com
+    - xn--levelup-bors-3cb.viskan.com
   issuerRef:
     name: letsencrypt
     kind: ClusterIssuer
@@ -93,7 +91,7 @@ metadata:
 spec:
   ingressClassName: external
   rules:
-    - host: levelup-borås.viskan.com
+    - host: xn--levelup-bors-3cb.viskan.com
       http:
         paths:
           - pathType: Prefix
@@ -106,4 +104,4 @@ spec:
   tls:
     - secretName: application-certificate
       hosts:
-        - levelup-borås.viskan.com
+        - xn--levelup-bors-3cb.viskan.com

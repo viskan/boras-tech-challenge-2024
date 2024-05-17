@@ -1,19 +1,20 @@
 "use client"
 
 import Link from "next/link";
-import { type EventType } from './Event'
+import { type Event } from './Event'
+import { ThumbsUp } from "lucide-react";
 
-const EventListItem = (event: EventType) => {
-    console.log(event);
+const EventListItem = ({event}: {event: Event}) => {
     return (
-        <Link
-            key={1}
-            className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 hover:bg-white/20"
-            href={"/events/" +  event.eventId}>
-            <h3 className="text-2xl font-bold">{event.name}</h3>
-            <div className="text-lg">
+        <div className="flex border-b border-accent items-center justify-between">
+            <Link className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 hover:bg-white/20" href={`/events/${event.id}`}>
+                <p>{event.name}</p>
+            </Link>
+            <div className="text-right flex pr-3">
+                <ThumbsUp className="size-4 mr-1"/>
+                <span className="text-xs">23</span>
             </div>
-        </Link>
+        </div>
     );
 };
 

@@ -1,4 +1,4 @@
-import type {Dispatch, SetStateAction} from "react";
+import type { Dispatch, SetStateAction } from "react";
 
 const Input = <A,>({
   title,
@@ -16,7 +16,6 @@ const Input = <A,>({
   const inputType: "input" | "switch" =
     valueType === "boolean" ? "switch" : "input";
   const defaultValue = object[fieldKey];
-
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setObject((prevState) => {
       const newValue =
@@ -28,9 +27,8 @@ const Input = <A,>({
       return prevState;
     });
   };
-
   return (
-    <div>
+    <div className="flex h-scree justify-center">
       <label>{title}</label>
       {inputType === "input" && (
         <input
