@@ -12,18 +12,14 @@ const EventListPage = async ({
 }) => {
   const events = await api.event.getEvents();
   const filteredEvents = events.filter(
-    (event) => !searchParams.event || event.eventType === searchParams.event,
+    (event) => !searchParams.eventType || event.eventType === searchParams.eventType,
   );
-
-  //console.log(" searchParams.eventType", searchParams);
-  //console.log("events", events);
-  console.log("filteredEvents", filteredEvents);
 
   return (
     <main>
-      <Filter />
       <div className="h-4" />
       <div className="flex justify-end">
+        <Filter />
         <Link href="events/new">
           <CalendarPlus className="m-2" />
         </Link>

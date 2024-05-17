@@ -21,7 +21,6 @@ export default function EventForm({ event, setEvent }: EventFormProps) {
   useEffect(() => {
     const dataFetch = async () => {
       try {
-
         const response = await fetch(
           `https://api.mapbox.com/geocoding/v5/mapbox.places/${address.address}.json?proximity=ip&access_token=` + env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN,
         );

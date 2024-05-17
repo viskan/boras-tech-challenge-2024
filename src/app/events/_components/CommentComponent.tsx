@@ -18,7 +18,7 @@ interface CommentComponentProps {
 }
 
 function CommentComponent({event, session}: CommentComponentProps) {
-  const [comment, setComment] = useState({comment: ""});
+  const [comment, setComment] = useState({comment: "", dummyId: 0});
   const router = useRouter();
 
   const addComment = api.event.addComment.useMutation({
@@ -38,7 +38,7 @@ function CommentComponent({event, session}: CommentComponentProps) {
   const handleSubmit = async () => {
     if (!comment.comment) return;
     await addComment.mutateAsync({eventId: event.id, comment: comment.comment});
-    setComment(prev => ({...prev, comment: ""}));
+    setComment(prev => ({...prev, comment: "", dummyId: prev.dummyId + 1}));
   };
 
   const handleDelete = async (commentId: number) => {

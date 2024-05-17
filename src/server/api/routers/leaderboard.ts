@@ -12,14 +12,15 @@ export const leaderboardRouter = createTRPCRouter({
             _count: {
               select: {
                 events: true,
-                likes: true
+                likes: true,
+                comments: true
               }
             }
           }
         })
 
         return users.map(user => ({
-          score : user._count.events*3 + user._count.likes*2,
+          score : user._count.events*3 + user._count.likes + user._count.comments*2,
           name: user.name
         })).sort((a, b) => {
           return b.score - a.score

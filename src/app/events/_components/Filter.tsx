@@ -10,6 +10,8 @@ import {
 import { eventTypeKeys } from "./Event";
 import { useCallback } from "react";
 
+const items = ["ALL",...eventTypeKeys] as const;
+
 const Filter = () => {
   const router = useRouter();
   const pathname = usePathname();
@@ -18,6 +20,12 @@ const Filter = () => {
   const handleQueryparams = useCallback(
     (name: string, value: string) => {
       const params = new URLSearchParams(searchParams);
+
+      if (value === "ALL") {
+        params.delete(name);
+        return params.toString();
+      }
+
       params.set(name, value);
 
       return params.toString();
@@ -26,18 +34,18 @@ const Filter = () => {
   );
 
   const handleFilterSelect = (value: string) => {
-    router.replace(pathname + "?" + handleQueryparams("event", value), {
+    router.replace(pathname + "?" + handleQueryparams("eventType", value), {
       scroll: false,
     });
   };
 
   return (
     <Select onValueChange={handleFilterSelect}>
-      <SelectTrigger>
-        <SelectValue>Filter</SelectValue>
+      <SelectTrigger className="w-[400px]">
+        <SelectValue placeholder="Select Event Type" />
       </SelectTrigger>
-      <SelectContent>
-        {eventTypeKeys.map((option) => (
+      <SelectContent className="w-[400px]">
+        {items.map((option) => (
           <SelectItem key={option} value={option}>
             {option}
           </SelectItem>

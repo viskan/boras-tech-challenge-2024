@@ -20,6 +20,7 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
+ENV NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN=pk.eyJ1IjoibWFoYW4tYXQtYnRjIiwiYSI6ImNsdzlibmttaTAyNnEyaW15N3hyNjY3eXQifQ.bWe0T8XuqS4ajdcJ3WTQRQ
 ENV NEXT_TELEMETRY_DISABLED 1
 RUN SKIP_ENV_VALIDATION=1 npm run build
 
