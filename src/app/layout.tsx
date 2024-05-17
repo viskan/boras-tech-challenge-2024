@@ -1,6 +1,6 @@
 import "~/styles/globals.css";
 
-import { GeistSans } from "geist/font/sans";
+import { Montserrat } from "@next/font/google";
 
 import { TRPCReactProvider } from "~/trpc/react";
 import MenuBar from "~/components/ui/menu-bar";
@@ -12,22 +12,23 @@ export const metadata = {
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
+const montserrat = Montserrat({
+  weight: ['400', '700'],
+  subsets: ['latin'],
+});
+
 export default function RootLayout({
   children,
-  modal,
 }: {
   children: React.ReactNode;
-  modal: React.ReactNode;
 }) {
-  console.log("modal", modal);
   return (
-    <html lang="en" className={`${GeistSans.variable}`}>
+    <html lang="en" className={montserrat.className}>
       <body className="bg-secondary">
         <Header />
         <div className="mt-16">
           <TRPCReactProvider>
             {children}
-            {modal}
           </TRPCReactProvider>
           <div className="absolute bottom-5 left-1/2 -translate-x-1/2 transform">
             <MenuBar />

@@ -1,15 +1,19 @@
-import type { Dispatch, SetStateAction } from "react";
+import type { Dispatch, ReactNode, SetStateAction } from "react";
 
 const Input = <A,>({
   title,
+  placeholder,
   object,
   setObject,
+  leftAttachment,
   fieldKey,
   ...rest
 }: {
   title: string;
+  placeholder?: string;
   object: A;
   setObject: Dispatch<SetStateAction<A>>;
+  leftAttachment?: ReactNode;
   fieldKey: keyof A;
 }) => {
   const valueType = typeof object[fieldKey];
@@ -28,9 +32,11 @@ const Input = <A,>({
     });
   };
   return (
-    <div className="flex h-scree justify-center">
+    <div className="flex">
       <label>{title}</label>
       {inputType === "input" && (
+        <div className="flex w-full justify-center">
+        {leftAttachment}
         <input
           defaultValue={defaultValue as string}
           {...rest}
@@ -38,8 +44,10 @@ const Input = <A,>({
           onChange={onChange}
           id={fieldKey.toString()}
           name={fieldKey.toString()}
+          placeholder={placeholder}
           className="w-full max-w-md rounded-md border px-3 py-2 text-black focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
+        </div>
       )}
 
       {inputType === "switch" && (

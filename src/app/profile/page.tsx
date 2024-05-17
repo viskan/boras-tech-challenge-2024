@@ -11,6 +11,7 @@ const ProfilePage = async () => {
     const session = await getServerAuthSession();
     return (
         <MaxWidthWrapper tag="main">
+            <div className="h-20"/>
             {session !== null && (
                 <>
                     <Profile session={session}/>

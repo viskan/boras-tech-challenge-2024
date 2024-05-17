@@ -29,7 +29,7 @@ export const eventRouter = createTRPCRouter({
   create: protectedProcedure
     .input(eventSchema)
     .mutation(async ({ ctx, input }) => {
-      console.log(input)
+      console.log(input);
       return ctx.db.event.create({
         data: {
           name: input.name,
@@ -42,6 +42,17 @@ export const eventRouter = createTRPCRouter({
       });
     }),
 
+  addComment: protectedProcedure
+    .input(z.object({ eventId: z.number(), comment: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.comment.create({
+        data: {
+          eventId: input.eventId,
+          comment: input.comment,
+          userId: ctx.session.user.id,
+        },
+      });
+    }),
   // getLatest: protectedProcedure.query(async ({ ctx }) => {
   //   return await ctx.db.event.findMany({
   //     orderBy: { createdAt: "desc" },

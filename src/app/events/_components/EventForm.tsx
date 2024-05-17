@@ -1,7 +1,8 @@
-"use client";
-import { type Dispatch, type SetStateAction, useState } from "react";
+import { type Dispatch, type SetStateAction , useEffect} from "react";
 import { type Event, eventTypeKeys } from "./Event";
-import Input from "../../_components/SmartInput";
+import { env } from "~/env";
+import Input from "../../_components/Input";
+import MapContainer from "~/app/_components/MapContainer";
 
 interface EventFormProps {
   event: Event;
@@ -16,22 +17,30 @@ export default function EventForm({ event, setEvent }: EventFormProps) {
     }));
   };
   return (
-    <div className="max-w-3xl overflow-hidden rounded shadow-lg">
-        <h1 className="mt-0 text-5xl font-extrabold tracking-tight sm:text-[5rem]">
-          <span className="text-[hsl(280,100%,70%)]">
-            {event.name ? event.name : "My New Event"}
-          </span>
-        </h1>
-        <Input title="" object={event} setObject={setEvent} fieldKey="name" />
-        <Input
-          title=""
-          object={event}
-          setObject={setEvent}
-          fieldKey="description"
-        />
+    <div className="max-w-3xl overflow-hidden rounded">
+      <h1 className="p-6 text-5xl font-extrabold tracking-tight sm:text-[5rem]">
+        <span className="text-accent">
+          {event.name ? event.name : "My New Event"}
+        </span>
+      </h1>
+      <Input
+        title=""
+        placeholder="Name"
+        object={event}
+        setObject={setEvent}
+        fieldKey="name"
+      />
+      <Input
+        title=""
+        placeholder="Description"
+        object={event}
+        setObject={setEvent}
+        fieldKey="description"
+      />
+      <div className="flex items-center justify-center">
         <select
           onChange={onChange}
-          className="text-center focus:shadow-outline h-10 w-full appearance-none rounded-lg border pl-3 pr-6 text-base text-black placeholder-gray-600"
+          className="focus:shadow-outline flex h-10 w-64 appearance-none justify-center rounded-lg border pl-3 pr-6 text-center text-base text-black placeholder-gray-600"
         >
           {eventTypeKeys.map((option) => (
             <option key={option} value={option}>
@@ -39,6 +48,14 @@ export default function EventForm({ event, setEvent }: EventFormProps) {
             </option>
           ))}
         </select>
+      </div>
+      <div className="mt-5 h-60">
+          <MapContainer
+            token={"pk.eyJ1IjoibWFoYW4tYXQtYnRjIiwiYSI6ImNsdzlibmttaTAyNnEyaW15N3hyNjY3eXQifQ.bWe0T8XuqS4ajdcJ3WTQRQ"}
+            events={[]}
+            size={{ height: "100%", width: "100%" }}
+          />
+        </div>
     </div>
   );
 }

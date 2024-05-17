@@ -1,7 +1,9 @@
-import { ArrowBigDownIcon, ArrowBigUpIcon } from "lucide-react";
-import MapContainer from "~/app/map/_components/MapContainer";
+import {ThumbsUp } from "lucide-react";
+import Input from "~/app/_components/Input";
+import MapContainer from "~/app/_components/MapContainer";
 import { env } from "~/env";
 import { api } from "~/trpc/server";
+import CommentComponent from "../_components/CommentComponent";
 
 type HomeProps = {
   params: {
@@ -12,12 +14,16 @@ type HomeProps = {
 export default async function Home({ params }: HomeProps) {
   const event = await api.event.getEvent({ id: Number(params.eventId) });
 
+  const handleThumbsUp = async () => {
+      //await api.event.thumbsUp({ id: Number(params.eventId) });
+  }
+
   if (!event) {
     return <div>Event not found</div>;
   }
 
   return (
-    <div className="flex h-screen justify-center">
+    <div className="flex w-full h-full justify-center">
       <div className="max-w-3xl overflow-hidden rounded shadow-lg">
         <div className="px-6 py-4">
           <div className="mb-2 text-xl font-bold">{event.name}</div>
@@ -33,15 +39,16 @@ export default async function Home({ params }: HomeProps) {
             size={{ height: "100%", width: "100%" }}
           />
         </div>
-        <div className="flex justify-center">
-          <div className="... w-64 flex-initial">
-            <ArrowBigUpIcon />
+        <div className="flex justify-center mt-10">
+          <div className="flex-initial">
+            <ThumbsUp className="w-32"/>
           </div>
-          <div className="... w-64 flex-initial">
-            <ArrowBigDownIcon />
+          <div className="flex-initial">
+            123
           </div>
-          
         </div>
+        <Divider title="Comments" />
+        <CommentComponent />
       </div>
     </div>
   );

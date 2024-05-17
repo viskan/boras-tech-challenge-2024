@@ -88,6 +88,8 @@ metadata:
   name: application
   labels:
     app: boras-tech-challenge-2024
+  annotations:
+    nginx.ingress.kubernetes.io/enable-modsecurity: "false"
 spec:
   ingressClassName: external
   rules:

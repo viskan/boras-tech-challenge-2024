@@ -1,5 +1,5 @@
 import { env } from "~/env";
-import MapContainer from "./map/_components/MapContainer";
+import MapContainer from "~/app/_components/MapContainer";
 import { api } from "~/trpc/server";
 
 export default async function Home() {
@@ -9,9 +9,5 @@ export default async function Home() {
     <div>
       <MapContainer token={token} events={events} size={{width: "100vw", height: "100vh"}} />
     </div>
-    // <div className="realtive">
-    //   <div className="h-screen w-screen">
-    //   </div>
-    // </div>
   );
 }

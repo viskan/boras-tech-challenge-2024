@@ -18,7 +18,7 @@ interface MapContainerProps {
   };
 }
 
-const MapContainer = ({ token, events, size}: MapContainerProps) => {
+const MapContainer = ({ token, events, size }: MapContainerProps) => {
   return (
     <Map
       mapStyle="mapbox://styles/mapbox/streets-v11"
