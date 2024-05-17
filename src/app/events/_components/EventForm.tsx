@@ -58,10 +58,8 @@ export default function EventForm({ event, setEvent }: EventFormProps) {
 
     void dataFetch();
   }, [setEvent, address.address]);
-
+  
   const onChange = (value: string) => {
-    console.log('value', value);
-    
     setEvent((prevState) => ({
       ...prevState,
       eventType: value as Event["eventType"],
@@ -69,7 +67,6 @@ export default function EventForm({ event, setEvent }: EventFormProps) {
   };
 
   const onPositionChange = (longitude: number, latitude:number) => {
-    console.log("what")
     setEvent((prevState) => ({
       ...prevState,
       longitude:longitude,

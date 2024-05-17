@@ -79,6 +79,7 @@ export const eventRouter = createTRPCRouter({
                 select: {
                   id: true,
                   name: true,
+                  banner: true,
                 },
               },
             },

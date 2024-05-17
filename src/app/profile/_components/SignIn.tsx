@@ -9,11 +9,11 @@ import LoginArt from "./LoginArt";
  */
 export default function SignIn() {
     return (
-        <div className="flex justify-center items-center">
-            <div>
+        <div >
+            <div className="flex justify-center items-center">
                 <Button onClick={() => signIn("google")}>Sign in with Google</Button>
             </div>
-            <div>
+            <div className="flex justify-center items-center">
                 <Button onClick={() => signIn("facebook")}>Sign in with Facebook</Button>
             </div>
             <LoginArt/>

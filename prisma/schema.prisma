@@ -84,6 +84,7 @@ model Organization {
     name            String
     users           User[]
     sponsorships    Sponsorship[]
+    banner          String?
 }
 
 model Sponsorship {

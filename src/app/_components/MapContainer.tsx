@@ -23,7 +23,7 @@ interface MapContainerProps {
     longitude: number;
     latitude: number;
   };
-  onPositionChange: (longitude:number, latitude:number) => void;
+  onPositionChange?: (longitude:number, latitude:number) => void;
 }
 
 const MapContainer = ({ token, events, eventTypeForNew, size, position, onPositionChange }: MapContainerProps) => {
@@ -79,7 +79,7 @@ const EventMarker = ({ event , draggable = false}: { event: Event , draggable?: 
       >
           <DialogTrigger asChild>
             <span>
-              <MapPin isClickable eventType={event.eventType} />
+              <MapPin isClickable className="size-10" eventType={event.eventType} />
             </span>
           </DialogTrigger>
           <DialogContent>
@@ -104,7 +104,7 @@ const SelectionMarker = ({
   eventType: Event["eventType"];
   longitude: number;
   latitude: number;
-  onPositionChange:(longitude:number, latitude:number) => void
+  onPositionChange?: (longitude:number, latitude:number) => void
 }) => {
   return (
     <Marker
@@ -112,28 +112,9 @@ const SelectionMarker = ({
       latitude={latitude}
       longitude={longitude}
       anchor={"bottom"}
-      onDragEnd={(e) => onPositionChange(e.lngLat.lng, e.lngLat.lat)}
+      onDragEnd={(e) => onPositionChange?.(e.lngLat.lng, e.lngLat.lat)}
     >
-      <MapPin eventType={eventType} className="cursor-pointer" />
+      <MapPin eventType={eventType} className="cursor-pointer size-10" />
     </Marker>
   );
 };
-
-const MapPinX = ({ ...props }) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="46"
-    height="46"
-    viewBox="0 0 46 46"
-    fill="none"
-    stroke="#FF9D00"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    className="lucide lucide-map-pin"
-    {...props}
-  >
-    <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" fill="#FF9D00" />
-    <circle cx="12" cy="10" r="3" fill="#fff" />
-  </svg>
-);

@@ -8,7 +8,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { getServerAuthSession } from "~/server/auth";
 import { redirect } from "next/navigation";
 import SponsorsComponent from "../_components/SponsorsComponent";
-import MapPin from "~/components/ui/map-pin";
 import getEventTypeTitle from "~/utils/event-type-title";
 import { useEffect, useState } from "react";
 

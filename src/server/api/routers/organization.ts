@@ -78,7 +78,7 @@ export const organizationRouter = createTRPCRouter({
     }),
 
   saveOrganization: protectedProcedure
-    .input(z.object({ organizationId: z.number(), name: z.string().min(1) }))
+    .input(z.object({ organizationId: z.number(), name: z.string().min(1)}))
     .mutation(async ({ ctx, input }) => {
       // Just verify that the user owns this organization
       await ctx.db.organization.findUniqueOrThrow({

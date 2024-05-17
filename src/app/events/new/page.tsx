@@ -7,6 +7,7 @@ import { useState } from "react";
 import { api } from "~/trpc/react";
 import { LucidePlus } from "lucide-react";
 
+
 export default function NewEvent() {
   const router = useRouter();
   const createEvent = api.event.create.useMutation();

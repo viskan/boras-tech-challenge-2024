@@ -4,6 +4,7 @@ import { api } from "~/trpc/server";
 import EventListItem from "~/app/events/_components/EventListItem";
 import { CalendarPlus } from "lucide-react";
 import Filter from "~/app/events/_components/Filter";
+import {getServerAuthSession} from "~/server/auth";
 
 const EventListPage = async ({
   searchParams,
@@ -15,14 +16,18 @@ const EventListPage = async ({
     (event) => !searchParams.eventType || event.eventType === searchParams.eventType,
   );
 
+  const session = await getServerAuthSession();
+
   return (
     <main>
       <div className="h-4" />
       <div className="p-3 flex items-center justify-center">
         <Filter />
-        <Link href="events/new">
-          <CalendarPlus className="m-2" />
-        </Link>
+        {session !== null && (
+          <Link href="events/new">
+            <CalendarPlus className="m-2" />
+          </Link>
+        )}
       </div>
       <div className="h-4" />
       {filteredEvents.map((event) => (
