@@ -1,14 +1,13 @@
 "use client";
 
-import { env } from "~/env";
 import Map, { Marker } from "react-map-gl";
-import { inferRouterOutputs } from "@trpc/server";
-import { AppRouter } from "~/server/api/root";
-import { Event } from "~/app/events/_components/Event";
+import { type inferRouterOutputs } from "@trpc/server";
+import { type AppRouter } from "~/server/api/root";
+import { type Event } from "~/app/events/_components/Event";
 
 import "mapbox-gl/dist/mapbox-gl.css";
 import Link from "next/link";
-
+ 
 interface MapContainerProps {
   token: string;
   events: inferRouterOutputs<AppRouter>["event"]["getEvents"];
@@ -24,20 +23,40 @@ interface MapContainerProps {
 
 const MapContainer = ({ token, events, size, position }: MapContainerProps) => {
   return (
+    <>
+    {position?.latitude}
+    {position?.longitude}
     <Map
       mapStyle="mapbox://styles/mapbox/streets-v11"
       mapboxAccessToken={token}
       initialViewState={{
+        latitude: 57.721,
+        longitude: 12.9398,
+        zoom: 13,
+      }}
+      viewState={{
         latitude: position?.latitude ? position.latitude : 57.721,
         longitude: position?.longitude ? position.longitude : 12.9398,
         zoom: 13,
+        bearing:123,
+        height: 123,
+        padding: {
+          bottom:0,
+          left:0,
+          right:0,
+          top:0
+        },
+        pitch: 1,
+        width: 123
       }}
       style={{ width: size.width, height: size.height }}
     >
       {events.map((event) => (
         <EventMarker key={event.id} event={event} />
       ))}
+      {position && <SelectionMarker longitude={position.longitude} latitude={position.latitude}  />}
     </Map>
+    </>
   );
 };
 
@@ -54,6 +73,19 @@ const EventMarker = ({ event }: { event: Event }) => {
       <Link href={`/events/${event.id}`} passHref>
         <MapPin cursor="pointer" />
       </Link>
+    </Marker>
+  );
+};
+
+const SelectionMarker = ({longitude, latitude }: { longitude : number, latitude:number }) => {
+  return (
+    <Marker
+      draggable
+      latitude={latitude}
+      longitude={longitude}
+      anchor={"bottom"}
+    >
+    <MapPin cursor="pointer" />
     </Marker>
   );
 };

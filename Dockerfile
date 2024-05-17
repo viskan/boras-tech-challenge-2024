@@ -14,8 +14,8 @@ RUN npm ci
 ##### BUILDER
 
 FROM --platform=linux/amd64 node:20-alpine AS builder
-#ARG DATABASE_URL
-#ARG NEXT_PUBLIC_CLIENTVAR
+ARG DATABASE_URL
+ARG NEXT_PUBLIC_CLIENTVAR
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .

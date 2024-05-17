@@ -7,14 +7,18 @@ import { useState } from "react";
 import Input from "~/app/_components/Input";
 import { Button } from "~/components/ui/button";
 import { type AppRouter } from "~/server/api/root";
+import { type getServerAuthSession } from "~/server/auth";
 import { api } from "~/trpc/react";
+
+type Awaited<T> = T extends Promise<infer U> ? U : T;
 
 type EditOrganizationProps = {
     organization: inferRouterOutputs<AppRouter>["organization"]["getById"];
+    session: NonNullable<Awaited<ReturnType<typeof getServerAuthSession>>>;
 }
 
-const EditOrganization = ({organization}: EditOrganizationProps) => {
-    const [data, setData] = useState({name: organization.name});
+const EditOrganization = ({organization, session}: EditOrganizationProps) => {
+    const [data, setData] = useState({name: organization.name, users: organization.users});
     const saveOrganization = api.organization.saveOrganization.useMutation();
     const onSave = async () => {
         await saveOrganization.mutateAsync({
@@ -23,8 +27,10 @@ const EditOrganization = ({organization}: EditOrganizationProps) => {
         });
     };
 
+    const removeUser = api.organization.removeUser.useMutation();
     const onRemoveUser = async (userId: string) => {
-        console.log("remove user", userId);
+        await removeUser.mutateAsync({organizationId: organization.id, userId});
+        setData(previous => ({...previous, users: previous.users.filter(user => user.id !== userId)}));
     };
 
     return (
@@ -36,16 +42,15 @@ const EditOrganization = ({organization}: EditOrganizationProps) => {
 
             <div className="m-3">
                 <strong>Ägare:</strong>
-                {organization.users.map(user => (
+                {data.users.map(user => (
                     <div key={user.id} className="flex">
                         {user.name}
-                        <CircleX className="size-3 mx-1" onClick={() => onRemoveUser(user.id)}/>
+                        {user.id === session.user.id && <span className="text-gray-500">&nbsp;(du)</span>}
+                        {user.id !== session.user.id && <CircleX className="size-3 mx-1" onClick={() => onRemoveUser(user.id)}/>}
                     </div>
                 ))}
             </div>
-            <Link href="/profile/organizations/???">
-                <Button>Lägg till ny ägare</Button>
-            </Link>
+            <Button onClick={() => alert("Not implemented")}>Lägg till ny ägare</Button>
         </div>
     );
 };

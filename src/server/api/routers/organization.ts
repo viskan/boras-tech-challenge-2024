@@ -48,6 +48,35 @@ export const organizationRouter = createTRPCRouter({
       });
     }),
 
+  removeUser: protectedProcedure
+    .input(z.object({ organizationId: z.number(), userId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      // Just verify that the user owns this organization
+      await ctx.db.organization.findUniqueOrThrow({
+        where: {
+          id: input.organizationId,
+          users: {
+            some: {
+              id: ctx.session.user.id,
+            },
+          },
+        },
+      });
+
+      await ctx.db.organization.update({
+        data: {
+          users: {
+            disconnect: {
+              id: input.userId,
+            },
+          },
+        },
+        where: {
+          id: input.organizationId,
+        }
+      });
+    }),
+
   saveOrganization: protectedProcedure
     .input(z.object({ organizationId: z.number(), name: z.string().min(1) }))
     .mutation(async ({ ctx, input }) => {

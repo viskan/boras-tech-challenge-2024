@@ -60,7 +60,7 @@ export const eventRouter = createTRPCRouter({
       return {
         id: event.id,
         name: event.name,
-        description: event.description as string,
+        description: event.description,
         eventType: event.eventType,
         latitude: event.latitude,
         longitude: event.longitude,
@@ -94,6 +94,17 @@ export const eventRouter = createTRPCRouter({
         data: {
           eventId: input.eventId,
           comment: input.comment,
+          userId: ctx.session.user.id,
+        },
+      });
+    }),
+  
+  deleteComment: protectedProcedure
+    .input(z.object({ commentId: z.number() }))
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.comment.delete({
+        where: {
+          id: input.commentId,
           userId: ctx.session.user.id,
         },
       });

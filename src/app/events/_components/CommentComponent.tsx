@@ -1,6 +1,7 @@
 "use client";
 
 import { inferRouterOutputs } from "@trpc/server";
+import { TrashIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Input from "~/app/_components/Input";
@@ -19,12 +20,19 @@ interface CommentComponentProps {
 function CommentComponent({event, session}: CommentComponentProps) {
   const [comment, setComment] = useState({comment: ""});
   const router = useRouter();
+
   const addComment = api.event.addComment.useMutation({
     onSuccess: () => {
       router.refresh();
     }
   });
 
+  const deleteComment = api.event.deleteComment.useMutation({
+    onSuccess: () => {
+      router.refresh();
+    }
+  });
+  
   if (!event) return null;
 
   const handleSubmit = async () => {
@@ -32,6 +40,10 @@ function CommentComponent({event, session}: CommentComponentProps) {
     await addComment.mutateAsync({eventId: event.id, comment: comment.comment});
     setComment({comment: ""});
   };
+
+  const handleDelete = async (commentId: number) => {
+    await deleteComment.mutateAsync({commentId});
+  }
   
 
 const leftAttachment = (
@@ -70,10 +82,12 @@ const leftAttachment = (
               )}
             </Avatar>
             <div className="bg-red flex-grow">
-              <div>{comment.user.name}</div>
+              <div className="font-semibold">{comment.user.name}</div>
               <div>{comment.comment}</div>
             </div>
-            <div>{comment.id}</div>
+            <div>
+              {comment.user.id === session.user.id && <TrashIcon cursor={"pointer"} onClick={() => handleDelete(comment.id)} />}
+            </div>
           </div>
         ))}
       </div>

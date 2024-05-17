@@ -1,5 +1,4 @@
 import { getServerAuthSession } from "~/server/auth";
-import SignOut from "./_components/SignOut";
 import Profile from "./_components/Profile";
 import SignIn from "./_components/SignIn";
 import MaxWidthWrapper from "../_components/max-width-wrapper";
